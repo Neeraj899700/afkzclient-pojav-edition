@@ -92,14 +92,14 @@
 
     </LinearLayout>
 
-    <!-- Account panel: bottom icon panel with AccountSpinner inside (landscape) -->
+    <!-- Account panel: transparent, no outline (landscape) -->
     <FrameLayout
         android:id="@+id/account_panel"
         android:layout_width="0dp"
         android:layout_height="@dimen/_42sdp"
         android:layout_marginHorizontal="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_6sdp"
-        android:background="@drawable/icon_panel_bg"
+        android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
