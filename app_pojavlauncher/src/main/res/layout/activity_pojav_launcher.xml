@@ -21,26 +21,30 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.25" />
 
-    <!-- Account panel: top right -->
-    <FrameLayout
+    <!-- Account panel: cloned icon panel style, no icons, just spinner -->
+    <LinearLayout
         android:id="@+id/account_spinner_wrapper"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:layout_marginEnd="@dimen/padding_medium"
-        android:background="@drawable/panel_account_spinner_bg"
+        android:layout_height="@dimen/_52sdp"
+        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/icon_panel_bg"
+        android:paddingHorizontal="@dimen/_4sdp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.75">
 
         <com.kdt.mcgui.AccountSpinner
             android:id="@+id/account_spinner"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@null"
             android:dropDownWidth="@dimen/_250sdp"
-            android:dropDownVerticalOffset="@dimen/_44sdp"
+            android:dropDownVerticalOffset="@dimen/_56sdp"
             android:popupBackground="@color/background_app"
             android:paddingStart="@dimen/padding_small"
             android:paddingEnd="@dimen/_32sdp"
@@ -54,7 +58,7 @@
             android:src="@drawable/ic_spinner_arrow"
             android:importantForAccessibility="no" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <!-- Green divider line -->
     <View

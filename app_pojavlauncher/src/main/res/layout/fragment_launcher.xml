@@ -114,7 +114,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         android:background="@drawable/preview_panel_bg"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintDimensionRatio="16:5.5"
         app:layout_constraintTop_toBottomOf="@id/profile_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
