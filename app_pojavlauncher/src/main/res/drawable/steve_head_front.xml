@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Face base (skin) -->
+    <path android:fillColor="#C09060"
+        android:pathData="M8,8h32v32H8z" />
+
+    <!-- Hair top -->
+    <path android:fillColor="#4A2A0A"
+        android:pathData="M8,8h32v8H8z" />
+
+    <!-- Hair left side -->
+    <path android:fillColor="#4A2A0A"
+        android:pathData="M8,8h8v20H8z" />
+
+    <!-- Hair right side -->
+    <path android:fillColor="#4A2A0A"
+        android:pathData="M32,8h8v20h-8z" />
+
+    <!-- Left eye white -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M14,18h6v6h-6z" />
+
+    <!-- Right eye white -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M28,18h6v6h-6z" />
+
+    <!-- Left pupil -->
+    <path android:fillColor="#3B2090"
+        android:pathData="M16,20h3v3h-3z" />
+
+    <!-- Right pupil -->
+    <path android:fillColor="#3B2090"
+        android:pathData="M30,20h3v3h-3z" />
+
+    <!-- Nose -->
+    <path android:fillColor="#A07048"
+        android:pathData="M21,22h6v5h-6z" />
+
+    <!-- Mouth -->
+    <path android:fillColor="#6B4030"
+        android:pathData="M18,28h12v3H18z" />
+
+</vector>
