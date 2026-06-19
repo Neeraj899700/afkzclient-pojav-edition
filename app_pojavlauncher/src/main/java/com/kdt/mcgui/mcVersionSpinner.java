@@ -36,6 +36,7 @@ import net.kdt.pojavlaunch.instances.InstanceAdapter;
 import net.kdt.pojavlaunch.instances.InstanceAdapterExtra;
 
 import java.io.IOException;
+import java.util.List;
 
 import fr.spse.extended_view.ExtendedTextView;
 
@@ -104,8 +105,8 @@ public class mcVersionSpinner extends ExtendedTextView {
                 .setNeutralButton(R.string.global_delete, (dialog, which) -> {
                     PojavApplication.sExecutorService.execute(() -> {
                         try {
-                            Instances instances = Instances.load();
-                            for(Instance inst : instances.list) {
+                            List<Instance> allInstances = Instances.loadAllInstances();
+                            for(Instance inst : allInstances) {
                                 if(inst.name != null && inst.name.equals(displayInstance.name)) {
                                     Instances.removeInstance(inst);
                                     break;
