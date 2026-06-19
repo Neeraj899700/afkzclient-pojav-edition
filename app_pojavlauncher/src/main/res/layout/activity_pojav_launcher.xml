@@ -21,17 +21,15 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.3" />
 
-    <!-- Account panel: 70% width, right, rounded 6sdp -->
+    <!-- Account panel: 70% width, right -->
     <com.kdt.mcgui.AccountSpinner
         android:id="@+id/account_spinner"
         android:layout_width="0dp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/padding_medium"
-        android:background="@drawable/panel_account_spinner_bg"
-        android:popupBackground="@drawable/panel_account_spinner_bg"
         android:dropDownWidth="@dimen/_250sdp"
-        android:dropDownVerticalOffset="@dimen/_76sdp"
+        android:dropDownVerticalOffset="@dimen/_44sdp"
         android:paddingStart="@dimen/padding_small"
         android:paddingEnd="@dimen/_12sdp"
         android:spinnerMode="dropdown"
