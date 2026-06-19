@@ -106,7 +106,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Profile panel 16:9 landscape -->
+        <!-- Profile panel -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile_panel"
             android:layout_width="0dp"
@@ -130,28 +130,47 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageButton
-                android:id="@+id/edit_profile_button"
-                android:layout_width="@dimen/_36sdp"
-                android:layout_height="@dimen/_36sdp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_px_edit"
-                android:scaleType="fitCenter"
-                android:padding="@dimen/_6sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/mc_version_spinner" />
-
-            <com.kdt.mcgui.MineButton
-                android:id="@+id/play_button"
+            <!-- Play button + edit/delete in a row -->
+            <LinearLayout
+                android:id="@+id/play_row"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginBottom="@dimen/_4sdp"
-                android:text="@string/main_play"
-                android:textAllCaps="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.kdt.mcgui.MineButton
+                    android:id="@+id/play_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:text="@string/main_play"
+                    android:textAllCaps="true" />
+
+                <ImageButton
+                    android:id="@+id/edit_profile_button"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_px_edit"
+                    android:scaleType="fitCenter"
+                    android:padding="@dimen/_6sdp" />
+
+                <ImageButton
+                    android:id="@+id/delete_profile_button"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_px_trash"
+                    android:scaleType="fitCenter"
+                    android:padding="@dimen/_6sdp" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
