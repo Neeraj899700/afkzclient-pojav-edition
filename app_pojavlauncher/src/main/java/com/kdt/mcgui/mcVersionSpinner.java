@@ -123,8 +123,8 @@ public class mcVersionSpinner extends ExtendedTextView {
 
         // Popup window behavior
         setOnClickListener(new OnClickListener() {
-            // Offset past the play button (10sdp gap + 56sdp height)
-            final int offset = getContext().getResources().getDimensionPixelOffset(R.dimen._66sdp);
+            // Offset past the play button (10sdp gap + 56sdp height) + 10sdp extra
+            final int offset = getContext().getResources().getDimensionPixelOffset(R.dimen._76sdp);
             @Override
             public void onClick(View v) {
                 if(mPopupWindow == null) getPopupWindow();
