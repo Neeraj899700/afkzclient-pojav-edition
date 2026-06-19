@@ -103,7 +103,8 @@ public class mcVersionSpinner extends ExtendedTextView {
                 .setNeutralButton(R.string.global_delete, (dialog, which) -> {
                     PojavApplication.sExecutorService.execute(() -> {
                         try {
-                            Instances.removeInstance(instance);
+                            java.io.File dir = instance.mInstanceRoot;
+                            if(dir != null) org.apache.commons.io.FileUtils.deleteDirectory(dir);
                             Tools.runOnUiThread(this::reloadProfiles);
                         } catch (Exception e) {
                             Tools.runOnUiThread(() -> Tools.showError(getContext(), e));
