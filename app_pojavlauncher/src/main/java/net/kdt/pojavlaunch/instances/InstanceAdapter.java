@@ -94,9 +94,9 @@ public class InstanceAdapter extends BaseAdapter {
 
         // Set selected background if needed
         if(idx == mSelectionIndex && displaySelection) {
-            extendedTextView.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, 60));
+            extendedTextView.setBackgroundResource(R.drawable.version_item_selected_bg);
         }else {
-            extendedTextView.setBackgroundColor(Color.TRANSPARENT);
+            extendedTextView.setBackgroundResource(R.drawable.version_item_bg);
         }
     }
 

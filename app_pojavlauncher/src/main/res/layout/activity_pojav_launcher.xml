@@ -21,23 +21,32 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.3" />
 
-    <!-- Account panel: 70% width, right, rounded 8sdp like bottom bar -->
-    <com.kdt.mcgui.AccountSpinner
-        android:id="@+id/account_spinner"
+    <!-- Account panel wrapper: styled background lives here -->
+    <FrameLayout
+        android:id="@+id/account_spinner_wrapper"
         android:layout_width="0dp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/padding_medium"
         android:background="@drawable/panel_account_spinner_bg"
-        android:dropDownWidth="@dimen/_250sdp"
-        android:dropDownVerticalOffset="@dimen/_44sdp"
-        android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/_12sdp"
-        android:spinnerMode="dropdown"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo_image"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintWidth_percent="0.7">
+
+        <com.kdt.mcgui.AccountSpinner
+            android:id="@+id/account_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:popupBackground="@android:color/transparent"
+            android:dropDownWidth="@dimen/_250sdp"
+            android:dropDownVerticalOffset="@dimen/_44sdp"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingEnd="@dimen/_12sdp"
+            android:spinnerMode="dropdown" />
+
+    </FrameLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_fragment"
@@ -45,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_panel"
-        app:layout_constraintTop_toBottomOf="@+id/account_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/account_spinner_wrapper"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
