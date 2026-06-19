@@ -113,7 +113,7 @@
             android:layout_height="@dimen/_44sdp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/spinner_arrow"
+            android:drawableEnd="@drawable/ic_spinner_arrow"
             app:drawableEndPadding="@dimen/_1sdp"
             app:drawableEndSize="@dimen/_12sdp"
             app:drawableStartIntegerScaling="true"

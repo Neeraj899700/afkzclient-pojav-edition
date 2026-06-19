@@ -120,7 +120,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:drawableEnd="@drawable/spinner_arrow"
+                android:drawableEnd="@drawable/ic_spinner_arrow"
                 app:drawableEndSize="@dimen/padding_heavy"
                 app:drawableStartIntegerScaling="true"
                 app:drawableStartSize="@dimen/_36sdp"
