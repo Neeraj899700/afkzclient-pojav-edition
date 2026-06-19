@@ -5,60 +5,51 @@
     android:layout_height="match_parent"
     android:background="@color/background_app">
 
-    <!-- Logo on left side, centered vertically with account panel -->
+    <!-- Afkz logo -->
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/padding_medium"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:src="@drawable/logo_afkz"
         android:scaleType="fitCenter"
         android:contentDescription="Afkz"
-        app:layout_constraintTop_toTopOf="@+id/account_spinner_wrapper"
-        app:layout_constraintBottom_toBottomOf="@+id/account_spinner_wrapper"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/account_spinner_wrapper"
+        app:layout_constraintEnd_toStartOf="@+id/account_spinner"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/account_spinner"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintWidth_percent="0.36" />
+        app:layout_constraintWidth_percent="0.25" />
 
-    <!-- Account panel: cloned icon panel style, width decreased 15% -->
-    <LinearLayout
-        android:id="@+id/account_spinner_wrapper"
+    <!-- Account spinner directly, no extra panel -->
+    <com.kdt.mcgui.AccountSpinner
+        android:id="@+id/account_spinner"
         android:layout_width="0dp"
         android:layout_height="@dimen/_52sdp"
-        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginEnd="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_8sdp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/icon_panel_bg"
-        android:paddingHorizontal="@dimen/_4sdp"
+        android:background="@null"
+        android:dropDownWidth="@dimen/_250sdp"
+        android:dropDownVerticalOffset="@dimen/_56sdp"
+        android:popupBackground="@color/background_app"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingEnd="@dimen/_32sdp"
+        android:spinnerMode="dropdown"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/logo_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.64">
+        app:layout_constraintStart_toEndOf="@+id/logo_image"
+        app:layout_constraintWidth_percent="0.64" />
 
-        <com.kdt.mcgui.AccountSpinner
-            android:id="@+id/account_spinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:dropDownWidth="@dimen/_250sdp"
-            android:dropDownVerticalOffset="@dimen/_56sdp"
-            android:popupBackground="@color/background_app"
-            android:paddingStart="@dimen/padding_small"
-            android:paddingEnd="@dimen/_32sdp"
-            android:spinnerMode="dropdown" />
-
-        <ImageView
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:src="@drawable/ic_spinner_arrow"
-            android:importantForAccessibility="no" />
-
-    </LinearLayout>
+    <ImageView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:src="@drawable/ic_spinner_arrow"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/account_spinner"
+        app:layout_constraintBottom_toBottomOf="@+id/account_spinner" />
 
     <!-- Green divider line -->
     <View
@@ -68,7 +59,7 @@
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:background="@color/minebutton_color"
-        app:layout_constraintTop_toBottomOf="@+id/account_spinner_wrapper"
+        app:layout_constraintTop_toBottomOf="@+id/account_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
