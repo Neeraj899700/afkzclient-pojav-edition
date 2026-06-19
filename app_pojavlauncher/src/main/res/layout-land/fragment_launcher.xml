@@ -92,16 +92,49 @@
 
     </LinearLayout>
 
+    <!-- Account panel: bottom icon panel with AccountSpinner inside (landscape) -->
+    <FrameLayout
+        android:id="@+id/account_panel"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_42sdp"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:background="@drawable/icon_panel_bg"
+        app:layout_constraintTop_toBottomOf="@id/icon_panel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.kdt.mcgui.AccountSpinner
+            android:id="@+id/account_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:dropDownWidth="@dimen/_250sdp"
+            android:dropDownVerticalOffset="@dimen/_48sdp"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingEnd="@dimen/_32sdp"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_spinner_arrow"
+            android:importantForAccessibility="no" />
+
+    </FrameLayout>
+
     <!-- Bottom row: profile panel + preview panel side by side in landscape -->
     <LinearLayout
         android:id="@+id/bottom_row"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_marginHorizontal="@dimen/_17sdp"
-        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginHorizontal="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_6sdp"
         android:layout_marginBottom="@dimen/_5sdp"
-        app:layout_constraintTop_toBottomOf="@id/icon_panel"
+        app:layout_constraintTop_toBottomOf="@id/account_panel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -115,7 +148,7 @@
             android:layout_marginEnd="@dimen/_4sdp"
             android:background="@drawable/preview_panel_bg" />
 
-        <!-- Preview panel 16:9 landscape with version spinner + play/edit/delete -->
+        <!-- Preview panel landscape with version spinner + play/edit/delete, 10px gap -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/preview_panel"
             android:layout_width="0dp"
@@ -139,7 +172,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Play button + edit/delete in a row -->
+            <!-- Play button + edit/delete with 10px gap from spinner -->
             <LinearLayout
                 android:id="@+id/play_row"
                 android:layout_width="0dp"
@@ -147,7 +180,9 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_4sdp"
+                app:layout_constraintTop_toBottomOf="@id/mc_version_spinner"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
