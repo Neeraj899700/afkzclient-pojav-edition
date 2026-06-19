@@ -298,6 +298,17 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
                 convertView = mInflater.inflate(R.layout.item_minecraft_account, parent, false);
             }
             populateView(convertView, position, true);
+
+            // Set rounded corners based on position in dropdown
+            int count = getCount();
+            if(position == 0) {
+                convertView.setBackgroundResource(R.drawable.account_item_bg_top);
+            } else if(position == count - 1) {
+                convertView.setBackgroundResource(R.drawable.account_item_bg_bottom);
+            } else {
+                convertView.setBackgroundResource(R.drawable.account_item_bg_middle);
+            }
+
             return convertView;
         }
 
