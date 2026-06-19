@@ -5,23 +5,23 @@
     android:layout_height="match_parent"
     android:background="@color/background_app">
 
-    <!-- Logo on left side -->
+    <!-- Logo on left side, centered vertically with account panel -->
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginTop="@dimen/_2sdp"
         android:layout_marginStart="@dimen/padding_medium"
         android:src="@drawable/logo_afkz"
         android:scaleType="fitCenter"
         android:contentDescription="Afkz"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/account_spinner_wrapper"
+        app:layout_constraintBottom_toBottomOf="@+id/account_spinner_wrapper"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/account_spinner_wrapper"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintWidth_percent="0.25" />
+        app:layout_constraintWidth_percent="0.36" />
 
-    <!-- Account panel: cloned icon panel style, no icons, just spinner -->
+    <!-- Account panel: cloned icon panel style, width decreased 15% -->
     <LinearLayout
         android:id="@+id/account_spinner_wrapper"
         android:layout_width="0dp"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.75">
+        app:layout_constraintWidth_percent="0.64">
 
         <com.kdt.mcgui.AccountSpinner
             android:id="@+id/account_spinner"

@@ -29,10 +29,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_px_book"
+            android:src="@drawable/ic_menu_news"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/mcl_tab_wiki" />
 
         <ImageButton
@@ -40,10 +40,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_social_media"
+            android:src="@drawable/ic_discord"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/mcl_button_social_media" />
 
         <ImageButton
@@ -51,10 +51,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_px_gamepad"
+            android:src="@drawable/ic_gamepad_pointer"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/mcl_option_customcontrol" />
 
         <ImageButton
@@ -62,10 +62,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_px_java_run"
+            android:src="@drawable/ic_menu_install_jar"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/main_install_jar_file" />
 
         <ImageButton
@@ -73,10 +73,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_px_sharelog"
+            android:src="@drawable/ic_share_log"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/main_share_logs" />
 
         <ImageButton
@@ -84,10 +84,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_px_folder"
+            android:src="@drawable/ic_folder_open"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:contentDescription="@string/mcl_button_open_directory" />
 
     </LinearLayout>
