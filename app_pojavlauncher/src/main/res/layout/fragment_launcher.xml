@@ -9,10 +9,11 @@
     android:orientation="vertical"
     android:background="@color/background_app">
 
+    <!-- Icon panel: premium round card -->
     <LinearLayout
         android:id="@+id/icon_panel"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_48sdp"
+        android:layout_height="@dimen/_52sdp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/icon_panel_bg"
@@ -29,9 +30,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_px_book"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/mcl_tab_wiki" />
 
         <ImageButton
@@ -40,9 +41,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_social_media"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/mcl_button_social_media" />
 
         <ImageButton
@@ -51,9 +52,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_px_gamepad"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/mcl_option_customcontrol" />
 
         <ImageButton
@@ -62,9 +63,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_px_java_run"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/main_install_jar_file" />
 
         <ImageButton
@@ -73,9 +74,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_px_sharelog"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/main_share_logs" />
 
         <ImageButton
@@ -84,48 +85,68 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_px_folder"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="@string/mcl_button_open_directory" />
 
     </LinearLayout>
 
-    <!-- Instance selector + edit button right below icon panel -->
-    <com.kdt.mcgui.mcVersionSpinner
-        android:id="@+id/mc_version_spinner"
+    <!-- Profile card: round card style with version + edit + play -->
+    <LinearLayout
+        android:id="@+id/profile_card"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_48sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:background="@android:color/transparent"
-        android:drawableEnd="@drawable/spinner_arrow"
-        app:drawableEndSize="@dimen/padding_heavy"
-        app:drawableStartIntegerScaling="true"
-        app:drawableStartSize="@dimen/_36sdp"
-        app:drawableEndPadding="@dimen/_1sdp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_profile_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/icon_panel" />
-
-    <ImageButton
-        android:id="@+id/edit_profile_button"
-        android:layout_width="@dimen/_48sdp"
-        android:layout_height="@dimen/_48sdp"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_px_edit"
-        app:layout_constraintBottom_toBottomOf="@+id/mc_version_spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/mc_version_spinner" />
-
-    <!-- Play button right below version spinner -->
-    <com.kdt.mcgui.MineButton
-        android:id="@+id/play_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_62sdp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/profile_card_bg"
         android:layout_marginHorizontal="@dimen/_17sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:textAllCaps="true"
-        android:text="@string/main_play"
-        app:layout_constraintTop_toBottomOf="@id/mc_version_spinner" />
+        android:layout_marginTop="@dimen/_12sdp"
+        android:padding="@dimen/_4sdp"
+        app:layout_constraintTop_toBottomOf="@id/icon_panel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Version selector row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_48sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/_8sdp">
+
+            <com.kdt.mcgui.mcVersionSpinner
+                android:id="@+id/mc_version_spinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/spinner_arrow"
+                app:drawableEndSize="@dimen/padding_heavy"
+                app:drawableStartIntegerScaling="true"
+                app:drawableStartSize="@dimen/_36sdp"
+                app:drawableEndPadding="@dimen/_1sdp" />
+
+            <ImageButton
+                android:id="@+id/edit_profile_button"
+                android:layout_width="@dimen/_44sdp"
+                android:layout_height="@dimen/_44sdp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_px_edit"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+        <!-- Play button -->
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/play_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_56sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:textAllCaps="true"
+            android:text="@string/main_play" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
