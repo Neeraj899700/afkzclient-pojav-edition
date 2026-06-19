@@ -38,7 +38,7 @@
             android:id="@+id/account_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
+            android:background="@null"
             android:dropDownWidth="@dimen/_250sdp"
             android:dropDownVerticalOffset="@dimen/_44sdp"
             android:paddingStart="@dimen/padding_small"

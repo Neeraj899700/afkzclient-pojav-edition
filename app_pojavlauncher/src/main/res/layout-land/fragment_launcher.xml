@@ -92,63 +92,77 @@
 
     </LinearLayout>
 
-    <!-- Bottom row: profile card + play button in a horizontal chain -->
+    <!-- Bottom row: profile panel + preview panel side by side in landscape -->
     <LinearLayout
         android:id="@+id/bottom_row"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Profile card -->
-        <LinearLayout
-            android:id="@+id/profile_card"
+        <!-- Profile panel 16:9 landscape -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_panel"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:background="@drawable/profile_card_bg"
-            android:paddingHorizontal="@dimen/_8sdp"
-            android:paddingVertical="@dimen/_4sdp"
-            android:gravity="center_vertical"
-            android:layout_marginEnd="@dimen/_8sdp">
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:background="@drawable/preview_panel_bg">
 
             <com.kdt.mcgui.mcVersionSpinner
                 android:id="@+id/mc_version_spinner"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_44sdp"
-                android:layout_weight="1"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:background="@android:color/transparent"
                 android:drawableEnd="@drawable/ic_spinner_arrow"
-                app:drawableEndPadding="@dimen/_1sdp"
                 app:drawableEndSize="@dimen/_12sdp"
                 app:drawableStartIntegerScaling="true"
-                app:drawableStartSize="@dimen/_36sdp" />
+                app:drawableStartSize="@dimen/_36sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <ImageButton
                 android:id="@+id/edit_profile_button"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_px_edit"
                 android:scaleType="fitCenter"
-                android:padding="@dimen/_8sdp" />
+                android:padding="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/mc_version_spinner" />
 
-        </LinearLayout>
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/play_button"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:text="@string/main_play"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Play button -->
-        <com.kdt.mcgui.MineButton
-            android:id="@+id/play_button"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Preview panel 16:9 landscape -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/preview_panel"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_44sdp"
-            android:layout_weight="2"
-            android:text="@string/main_play"
-            android:textAllCaps="true" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/preview_panel_bg" />
 
     </LinearLayout>
 
