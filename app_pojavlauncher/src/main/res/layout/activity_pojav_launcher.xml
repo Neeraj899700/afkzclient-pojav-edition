@@ -17,22 +17,69 @@
         android:contentDescription="Afkz"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/account_spinner_wrapper"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.25" />
+
+    <!-- Account panel: top right -->
+    <FrameLayout
+        android:id="@+id/account_spinner_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/padding_medium"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo_image"
+        app:layout_constraintWidth_percent="0.75">
+
+        <com.kdt.mcgui.AccountSpinner
+            android:id="@+id/account_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:dropDownWidth="@dimen/_250sdp"
+            android:dropDownVerticalOffset="@dimen/_44sdp"
+            android:popupBackground="@color/background_app"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingEnd="@dimen/_32sdp"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_spinner_arrow"
+            android:importantForAccessibility="no" />
+
+    </FrameLayout>
+
+    <!-- Green divider line -->
+    <View
+        android:id="@+id/green_divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@color/minebutton_color"
+        app:layout_constraintTop_toBottomOf="@+id/account_spinner_wrapper"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_fragment"
         android:name="net.kdt.pojavlaunch.fragments.MainMenuFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_panel"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/green_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom nav bar: sharp edges, full width -->
+    <!-- Bottom nav bar -->
     <LinearLayout
         android:id="@+id/bottom_nav_panel"
         android:layout_width="0dp"
