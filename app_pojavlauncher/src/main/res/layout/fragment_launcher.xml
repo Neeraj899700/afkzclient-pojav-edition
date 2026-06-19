@@ -92,61 +92,56 @@
 
     </LinearLayout>
 
-    <!-- Profile card: round card style with version + edit + play -->
+    <!-- Profile card: round card style with version + edit -->
     <LinearLayout
         android:id="@+id/profile_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:background="@drawable/profile_card_bg"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_12sdp"
-        android:padding="@dimen/_4sdp"
+        android:paddingHorizontal="@dimen/_8sdp"
+        android:paddingVertical="@dimen/_4sdp"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Version selector row -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.kdt.mcgui.mcVersionSpinner
+            android:id="@+id/mc_version_spinner"
+            android:layout_width="0dp"
             android:layout_height="@dimen/_48sdp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="@dimen/_8sdp">
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_spinner_arrow"
+            app:drawableEndSize="@dimen/padding_heavy"
+            app:drawableStartIntegerScaling="true"
+            app:drawableStartSize="@dimen/_36sdp"
+            app:drawableEndPadding="@dimen/_1sdp" />
 
-            <com.kdt.mcgui.mcVersionSpinner
-                android:id="@+id/mc_version_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:drawableEnd="@drawable/ic_spinner_arrow"
-                app:drawableEndSize="@dimen/padding_heavy"
-                app:drawableStartIntegerScaling="true"
-                app:drawableStartSize="@dimen/_36sdp"
-                app:drawableEndPadding="@dimen/_1sdp" />
-
-            <ImageButton
-                android:id="@+id/edit_profile_button"
-                android:layout_width="@dimen/_44sdp"
-                android:layout_height="@dimen/_44sdp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_px_edit"
-                android:scaleType="fitCenter"
-                android:padding="@dimen/_8sdp" />
-
-        </LinearLayout>
-
-        <!-- Play button -->
-        <com.kdt.mcgui.MineButton
-            android:id="@+id/play_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_56sdp"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginBottom="@dimen/_4sdp"
-            android:textAllCaps="true"
-            android:text="@string/main_play" />
+        <ImageButton
+            android:id="@+id/edit_profile_button"
+            android:layout_width="@dimen/_44sdp"
+            android:layout_height="@dimen/_44sdp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_px_edit"
+            android:scaleType="fitCenter"
+            android:padding="@dimen/_8sdp" />
 
     </LinearLayout>
+
+    <!-- Play button: separate from profile card with gap -->
+    <com.kdt.mcgui.MineButton
+        android:id="@+id/play_button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_56sdp"
+        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textAllCaps="true"
+        android:text="@string/main_play"
+        app:layout_constraintTop_toBottomOf="@id/profile_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

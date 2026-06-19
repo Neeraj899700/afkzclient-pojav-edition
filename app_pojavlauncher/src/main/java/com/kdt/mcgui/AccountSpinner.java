@@ -128,7 +128,11 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         setOnItemSelectedListener(this);
         reload();
 
-        // Background is set via XML layout - do not override here
+        // Force clear AppCompatSpinner's internal compat background
+        setBackground(null);
+        setBackgroundResource(R.drawable.panel_account_spinner_bg);
+        setPopupBackgroundResource(R.drawable.panel_account_spinner_bg);
+
         mLoginBarPaint.setColor(getResources().getColor(R.color.minebutton_color));
         mLoginBarPaint.setStrokeWidth(getResources().getDimensionPixelOffset(R.dimen._2sdp));
         mLoginStepAnimator.addUpdateListener(this);

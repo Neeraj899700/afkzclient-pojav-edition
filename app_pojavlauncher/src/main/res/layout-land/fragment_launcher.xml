@@ -101,11 +101,12 @@
         android:background="@drawable/profile_card_bg"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_8sdp"
-        android:padding="@dimen/_4sdp"
+        android:paddingHorizontal="@dimen/_8sdp"
+        android:paddingVertical="@dimen/_4sdp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toStartOf="@+id/play_button">
 
         <com.kdt.mcgui.mcVersionSpinner
             android:id="@+id/mc_version_spinner"
@@ -128,15 +129,22 @@
             android:scaleType="fitCenter"
             android:padding="@dimen/_8sdp" />
 
-        <com.kdt.mcgui.MineButton
-            android:id="@+id/play_button"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_44sdp"
-            android:layout_weight="2"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:text="@string/main_play"
-            android:textAllCaps="true" />
-
     </LinearLayout>
+
+    <!-- Play button: landscape separate with gap -->
+    <com.kdt.mcgui.MineButton
+        android:id="@+id/play_button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_44sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="@string/main_play"
+        android:textAllCaps="true"
+        app:layout_constraintTop_toTopOf="@+id/profile_card"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_card"
+        app:layout_constraintStart_toEndOf="@+id/profile_card"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
