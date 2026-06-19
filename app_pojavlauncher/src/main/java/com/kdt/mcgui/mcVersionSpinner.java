@@ -181,9 +181,9 @@ public class mcVersionSpinner extends ExtendedTextView {
         });
 
 
-        // Custom animation, nice slide in
+        // Custom animation, slide in from top to bottom
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            mPopupAnimation = new Slide(Gravity.BOTTOM);
+            mPopupAnimation = new Slide(Gravity.TOP);
             mPopupWindow.setEnterTransition((Transition) mPopupAnimation);
             mPopupWindow.setExitTransition((Transition) mPopupAnimation);
         }
