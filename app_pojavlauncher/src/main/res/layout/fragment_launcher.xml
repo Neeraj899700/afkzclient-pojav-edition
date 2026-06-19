@@ -92,7 +92,7 @@
 
     </LinearLayout>
 
-    <!-- 16:9 Panel #1: Profile panel with version spinner + play/edit/delete row -->
+    <!-- 16:9 Panel #1: Profile panel (empty, just outline) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_panel"
         android:layout_width="0dp"
@@ -103,67 +103,7 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.kdt.mcgui.mcVersionSpinner
-            android:id="@+id/mc_version_spinner"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_spinner_arrow"
-            app:drawableEndSize="@dimen/padding_heavy"
-            app:drawableStartIntegerScaling="true"
-            app:drawableStartSize="@dimen/_36sdp"
-            app:drawableEndPadding="@dimen/_1sdp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Play button + Edit + Delete in one row -->
-        <LinearLayout
-            android:id="@+id/play_row"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_44sdp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginHorizontal="@dimen/_12sdp"
-            android:layout_marginBottom="@dimen/_6sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.kdt.mcgui.MineButton
-                android:id="@+id/play_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/_6sdp"
-                android:textAllCaps="true"
-                android:text="@string/main_play" />
-
-            <ImageButton
-                android:id="@+id/edit_profile_button"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_px_edit"
-                android:scaleType="fitCenter"
-                android:padding="@dimen/_8sdp" />
-
-            <ImageButton
-                android:id="@+id/delete_profile_button"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_px_trash"
-                android:scaleType="fitCenter"
-                android:padding="@dimen/_8sdp" />
-
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Action bar panel: like icon panel, below profile panel -->
     <LinearLayout
@@ -248,7 +188,7 @@
 
     </LinearLayout>
 
-    <!-- 16:9 Panel #2: Full size preview panel -->
+    <!-- 16:9 Panel #2: Preview panel with version spinner + play/edit/delete -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/preview_panel"
         android:layout_width="0dp"
@@ -262,6 +202,66 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.kdt.mcgui.mcVersionSpinner
+            android:id="@+id/mc_version_spinner"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_spinner_arrow"
+            app:drawableEndSize="@dimen/padding_heavy"
+            app:drawableStartIntegerScaling="true"
+            app:drawableStartSize="@dimen/_36sdp"
+            app:drawableEndPadding="@dimen/_1sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Play button + Edit + Delete in one row -->
+        <LinearLayout
+            android:id="@+id/play_row"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_44sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/play_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:textAllCaps="true"
+                android:text="@string/main_play" />
+
+            <ImageButton
+                android:id="@+id/edit_profile_button"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_px_edit"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp" />
+
+            <ImageButton
+                android:id="@+id/delete_profile_button"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_px_trash"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

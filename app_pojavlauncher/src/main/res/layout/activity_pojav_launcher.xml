@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_height="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_2sdp"
         android:layout_marginStart="@dimen/padding_medium"
         android:src="@drawable/logo_afkz"
@@ -19,20 +19,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/account_spinner"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.25" />
 
-    <!-- Account panel: 70% width, right, rounded with dropdown icon -->
+    <!-- Account panel: 70% width, right, rounded with dropdown icon inside -->
     <FrameLayout
         android:id="@+id/account_spinner_wrapper"
         android:layout_width="0dp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/padding_medium"
-        android:background="@android:color/transparent"
+        android:background="@drawable/panel_account_spinner_bg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo_image"
-        app:layout_constraintWidth_percent="0.7">
+        app:layout_constraintWidth_percent="0.75">
 
         <com.kdt.mcgui.AccountSpinner
             android:id="@+id/account_spinner"
@@ -47,7 +47,7 @@
 
         <ImageView
             android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/ic_spinner_arrow"

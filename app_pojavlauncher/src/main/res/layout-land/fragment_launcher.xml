@@ -106,13 +106,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Profile panel -->
+        <!-- Profile panel (empty, just outline) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile_panel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/_4sdp"
+            android:background="@drawable/preview_panel_bg" />
+
+        <!-- Preview panel 16:9 landscape with version spinner + play/edit/delete -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/preview_panel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4sdp"
             android:background="@drawable/preview_panel_bg">
 
             <com.kdt.mcgui.mcVersionSpinner
@@ -173,15 +182,6 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Preview panel 16:9 landscape -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/preview_panel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="@dimen/_4sdp"
-            android:background="@drawable/preview_panel_bg" />
 
     </LinearLayout>
 
