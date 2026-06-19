@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.3" />
 
-    <!-- Account panel: 70% width, right, premium minimal round -->
+    <!-- Account panel: 70% width, right, rounded 8sdp like bottom bar -->
     <com.kdt.mcgui.AccountSpinner
         android:id="@+id/account_spinner"
         android:layout_width="0dp"
@@ -39,22 +39,13 @@
         app:layout_constraintStart_toEndOf="@+id/logo_image"
         app:layout_constraintWidth_percent="0.7" />
 
-    <!-- Green accent line under top section -->
-    <View
-        android:id="@+id/green_line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/minebutton_color"
-        android:layout_marginTop="@dimen/_2sdp"
-        app:layout_constraintTop_toBottomOf="@id/account_spinner" />
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_fragment"
         android:name="net.kdt.pojavlaunch.fragments.MainMenuFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_panel"
-        app:layout_constraintTop_toBottomOf="@+id/green_line"
+        app:layout_constraintTop_toBottomOf="@+id/account_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
