@@ -133,7 +133,6 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         setBackground(null);
         setBackgroundResource(R.drawable.panel_account_spinner_bg);
         setPopupBackgroundResource(R.drawable.panel_account_spinner_bg);
-        setPopupBackgroundOffset(0, 0);
 
         mLoginBarPaint.setColor(getResources().getColor(R.color.minebutton_color));
         mLoginBarPaint.setStrokeWidth(getResources().getDimensionPixelOffset(R.dimen._2sdp));
