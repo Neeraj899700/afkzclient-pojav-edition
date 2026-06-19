@@ -5,7 +5,23 @@
     android:layout_height="match_parent"
     android:background="@color/background_app">
 
-    <!-- Account panel: 70% width, right-aligned, clean design -->
+    <!-- Logo on left side -->
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_44sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/padding_medium"
+        android:src="@drawable/logo_afkz"
+        android:scaleType="fitCenter"
+        android:contentDescription="Afkz"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/account_spinner"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <!-- Account panel: 70% width, right, premium minimal round -->
     <com.kdt.mcgui.AccountSpinner
         android:id="@+id/account_spinner"
         android:layout_width="0dp"
@@ -16,27 +32,21 @@
         android:dropDownWidth="@dimen/_250sdp"
         android:dropDownVerticalOffset="@dimen/_44sdp"
         android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_12sdp"
         android:spinnerMode="dropdown"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo_image"
         app:layout_constraintWidth_percent="0.7" />
 
-    <!-- Progress bar between top area and icon panel -->
-    <ProgressBar
-        android:id="@+id/top_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
+    <!-- Green accent line under top section -->
+    <View
+        android:id="@+id/green_line"
+        android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        android:progressTint="@color/minebutton_color"
-        android:backgroundTint="@color/background_overlay"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/account_spinner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:background="@color/minebutton_color"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintTop_toBottomOf="@id/account_spinner" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_fragment"
@@ -44,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_panel"
-        app:layout_constraintTop_toBottomOf="@+id/top_progress_bar"
+        app:layout_constraintTop_toBottomOf="@+id/green_line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

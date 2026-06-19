@@ -342,6 +342,10 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
             BitmapDrawable accountHead = mSkinHeadCache.get(headCacheHash);
             if (accountHead == null){
                 Bitmap accountSkinFace = account.getSkinFace();
+                if (accountSkinFace == null) {
+                    // Default Steve head for local accounts
+                    accountSkinFace = android.graphics.BitmapFactory.decodeResource(resources, R.drawable.steve_head);
+                }
                 accountHead = new BitmapDrawable(resources, accountSkinFace);
                 mSkinHeadCache.put(headCacheHash, accountHead);
             }
