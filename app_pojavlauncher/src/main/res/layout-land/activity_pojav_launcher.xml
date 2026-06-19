@@ -28,7 +28,7 @@
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/padding_medium"
-        android:background="@android:color/transparent"
+        android:background="@drawable/panel_account_spinner_bg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo_image"
