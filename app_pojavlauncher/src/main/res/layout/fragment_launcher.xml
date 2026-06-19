@@ -92,72 +92,112 @@
 
     </LinearLayout>
 
-    <!-- Profile card: grayish black background -->
-    <LinearLayout
-        android:id="@+id/profile_card"
+    <!-- 16:9 Panel #1: Profile panel with version spinner + edit + play -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_panel"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/profile_card_bg"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_12sdp"
-        android:paddingHorizontal="@dimen/_8sdp"
-        android:paddingVertical="@dimen/_4sdp"
+        android:background="@drawable/preview_panel_bg"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.kdt.mcgui.mcVersionSpinner
-            android:id="@+id/mc_version_spinner"
+        <LinearLayout
+            android:id="@+id/profile_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/profile_card_bg"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.kdt.mcgui.mcVersionSpinner
+                android:id="@+id/mc_version_spinner"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_44sdp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/ic_spinner_arrow"
+                app:drawableEndSize="@dimen/padding_heavy"
+                app:drawableStartIntegerScaling="true"
+                app:drawableStartSize="@dimen/_36sdp"
+                app:drawableEndPadding="@dimen/_1sdp" />
+
+            <ImageButton
+                android:id="@+id/edit_profile_button"
+                android:layout_width="@dimen/_44sdp"
+                android:layout_height="@dimen/_44sdp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_px_edit"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+        <!-- Play button inside profile panel -->
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/play_button"
             android:layout_width="0dp"
             android:layout_height="@dimen/_48sdp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_spinner_arrow"
-            app:drawableEndSize="@dimen/padding_heavy"
-            app:drawableStartIntegerScaling="true"
-            app:drawableStartSize="@dimen/_36sdp"
-            app:drawableEndPadding="@dimen/_1sdp" />
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:textAllCaps="true"
+            android:text="@string/main_play"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageButton
-            android:id="@+id/edit_profile_button"
-            android:layout_width="@dimen/_44sdp"
-            android:layout_height="@dimen/_44sdp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_px_edit"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-    <!-- Play button: separate from profile card with gap -->
-    <com.kdt.mcgui.MineButton
-        android:id="@+id/play_button"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_56sdp"
-        android:layout_marginHorizontal="@dimen/_17sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:textAllCaps="true"
-        android:text="@string/main_play"
-        app:layout_constraintTop_toBottomOf="@id/profile_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- 16:9 preview panel below play button, 5px above nav bar -->
+    <!-- Two 16:9 panels at bottom -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/preview_panel"
+        android:id="@+id/bottom_panels"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_5sdp"
-        android:background="@drawable/preview_panel_bg"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintTop_toBottomOf="@id/play_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_panel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Bottom left 16:9 panel -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_panel_left"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:background="@drawable/preview_panel_bg"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bottom_panel_right"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread" />
+
+        <!-- Bottom right 16:9 panel -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_panel_right"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/preview_panel_bg"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintStart_toEndOf="@+id/bottom_panel_left"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bottom_panel_left"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_panel_left" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
