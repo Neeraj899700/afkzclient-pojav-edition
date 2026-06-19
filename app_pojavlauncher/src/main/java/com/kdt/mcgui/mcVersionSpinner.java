@@ -30,6 +30,7 @@ import net.kdt.pojavlaunch.extra.ExtraListener;
 import net.kdt.pojavlaunch.fragments.InstanceEditorFragment;
 import net.kdt.pojavlaunch.fragments.ProfileTypeSelectFragment;
 import net.kdt.pojavlaunch.instances.DisplayInstance;
+import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.instances.InstanceAdapter;
 import net.kdt.pojavlaunch.instances.InstanceAdapterExtra;
@@ -95,16 +96,21 @@ public class mcVersionSpinner extends ExtendedTextView {
     public void deleteCurrentProfile(FragmentActivity fragmentActivity) {
         Object currentSelection = mProfileAdapter.getItem(mSelectedIndex);
         if(currentSelection instanceof DisplayInstance) {
-            DisplayInstance instance = (DisplayInstance) currentSelection;
+            DisplayInstance displayInstance = (DisplayInstance) currentSelection;
             new android.app.AlertDialog.Builder(fragmentActivity)
                 .setTitle("Delete Profile")
-                .setMessage("Delete \"" + instance.name + "\"?")
+                .setMessage("Delete \"" + displayInstance.name + "\"?")
                 .setPositiveButton(android.R.string.cancel, null)
                 .setNeutralButton(R.string.global_delete, (dialog, which) -> {
                     PojavApplication.sExecutorService.execute(() -> {
                         try {
-                            java.io.File dir = instance.mInstanceRoot;
-                            if(dir != null) org.apache.commons.io.FileUtils.deleteDirectory(dir);
+                            Instances instances = Instances.load();
+                            for(Instance inst : instances.list) {
+                                if(inst.name != null && inst.name.equals(displayInstance.name)) {
+                                    Instances.removeInstance(inst);
+                                    break;
+                                }
+                            }
                             Tools.runOnUiThread(this::reloadProfiles);
                         } catch (Exception e) {
                             Tools.runOnUiThread(() -> Tools.showError(getContext(), e));
