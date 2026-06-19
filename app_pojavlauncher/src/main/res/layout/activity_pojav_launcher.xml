@@ -5,45 +5,24 @@
     android:layout_height="match_parent"
     android:background="@color/background_app">
 
-    <!-- Top panel: logo left 30%, account spinner right 70% -->
-    <LinearLayout
-        android:id="@+id/top_panel"
+    <!-- Account panel: 70% width, right-aligned, clean design -->
+    <com.kdt.mcgui.AccountSpinner
+        android:id="@+id/account_spinner"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_48sdp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/panel_account_bg"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/padding_medium"
+        android:background="@drawable/panel_account_spinner_bg"
+        android:dropDownWidth="@dimen/_250sdp"
+        android:dropDownVerticalOffset="@dimen/_44sdp"
         android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_small"
+        android:paddingEnd="@dimen/_8sdp"
+        android:spinnerMode="dropdown"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.7" />
 
-        <ImageView
-            android:id="@+id/logo_image"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="30"
-            android:src="@drawable/logo_afkz"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_4sdp"
-            android:contentDescription="Afkz" />
-
-        <com.kdt.mcgui.AccountSpinner
-            android:id="@+id/account_spinner"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_weight="70"
-            android:background="@drawable/panel_account_spinner_bg"
-            android:dropDownWidth="@dimen/_250sdp"
-            android:dropDownVerticalOffset="@dimen/_48sdp"
-            android:paddingStart="@dimen/padding_small"
-            android:paddingEnd="@dimen/_8sdp"
-            android:spinnerMode="dropdown" />
-
-    </LinearLayout>
-
-    <!-- Progress bar between top panel and icon panel -->
+    <!-- Progress bar between top area and icon panel -->
     <ProgressBar
         android:id="@+id/top_progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -55,7 +34,7 @@
         android:progressTint="@color/minebutton_color"
         android:backgroundTint="@color/background_overlay"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/top_panel"
+        app:layout_constraintTop_toBottomOf="@id/account_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

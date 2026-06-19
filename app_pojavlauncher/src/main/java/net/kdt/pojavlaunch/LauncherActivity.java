@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -55,19 +54,13 @@ public class LauncherActivity extends BaseActivity {
 
     private FragmentContainerView mFragmentView;
     private ImageButton mSettingsButton;
+    private ImageButton mHomeButton;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
     private NotificationManager mNotificationManager;
     private static ActivityResultLauncher<String> mRequestPermissionLauncher;
 
-    /* Allows to switch from one button "type" to another */
-    private final FragmentManager.FragmentLifecycleCallbacks mFragmentCallbackListener = new FragmentManager.FragmentLifecycleCallbacks() {
-        @Override
-        public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-            mSettingsButton.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), f instanceof MainMenuFragment
-                    ? R.drawable.ic_px_sliders : R.drawable.ic_px_home));
-        }
-    };
+    /* No more icon swap - settings always stays settings, home always stays home */
 
     /* Listener for the back button in settings */
     private final ExtraListener<String> mBackPreferenceListener = (key, value) -> {
@@ -95,8 +88,15 @@ public class LauncherActivity extends BaseActivity {
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         if(fragment instanceof MainMenuFragment){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
-        } else{
-            // The setting button doubles as a home button now
+        }
+    };
+
+    /* Listener for the home button - always go back to main menu */
+    private final View.OnClickListener mHomeButtonListener = v -> {
+        FragmentManager manager = getSupportFragmentManager();
+        if(manager.isStateSaved()) return;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
+        if(!(fragment instanceof MainMenuFragment)){
             Tools.backToMainMenu(this);
         }
     };
@@ -188,6 +188,7 @@ public class LauncherActivity extends BaseActivity {
         ProgressKeeper.addTaskCountListener((mProgressServiceKeeper = new ProgressServiceKeeper(this)));
 
         mSettingsButton.setOnClickListener(mSettingButtonListener);
+        mHomeButton.setOnClickListener(mHomeButtonListener);
         ProgressKeeper.addTaskCountListener(mProgressLayout);
         ExtraCore.addExtraListener(ExtraConstants.BACK_PREFERENCE, mBackPreferenceListener);
         ExtraCore.addExtraListener(ExtraConstants.SELECT_AUTH_METHOD, mSelectAuthMethod);
@@ -220,7 +221,6 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentCallbackListener, true);
     }
 
     @Override
@@ -232,8 +232,6 @@ public class LauncherActivity extends BaseActivity {
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.BACK_PREFERENCE, mBackPreferenceListener);
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.SELECT_AUTH_METHOD, mSelectAuthMethod);
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.LAUNCH_GAME, mLaunchGameListener);
-
-        getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(mFragmentCallbackListener);
     }
 
     /** Custom implementation to feel more natural when a backstack isn't present */
@@ -309,6 +307,7 @@ public class LauncherActivity extends BaseActivity {
     private void bindViews(){
         mFragmentView = findViewById(R.id.container_fragment);
         mSettingsButton = findViewById(R.id.nav_settings_button);
+        mHomeButton = findViewById(R.id.nav_home_button);
         mProgressLayout = findViewById(R.id.progress_layout);
     }
 }
