@@ -194,9 +194,6 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        float bottom = getHeight() - mLoginBarPaint.getStrokeWidth()/2;
-        float lineFillPercent = (mLoginStep / mMaxSteps);
-        canvas.drawLine(0, bottom, lineFillPercent * getWidth(), bottom, mLoginBarPaint);
     }
 
     @Override
