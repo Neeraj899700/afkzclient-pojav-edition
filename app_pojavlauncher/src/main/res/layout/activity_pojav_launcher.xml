@@ -51,7 +51,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/ic_spinner_arrow"
-            android:importantForAccessibility="false" />
+            android:importantForAccessibility="no" />
 
     </FrameLayout>
 
