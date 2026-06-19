@@ -92,6 +92,28 @@ public class mcVersionSpinner extends ExtendedTextView {
         }
     }
 
+    public void deleteCurrentProfile(FragmentActivity fragmentActivity) {
+        Object currentSelection = mProfileAdapter.getItem(mSelectedIndex);
+        if(currentSelection instanceof DisplayInstance) {
+            DisplayInstance instance = (DisplayInstance) currentSelection;
+            new android.app.AlertDialog.Builder(fragmentActivity)
+                .setTitle("Delete Profile")
+                .setMessage("Delete \"" + instance.name + "\"?")
+                .setPositiveButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.global_delete, (dialog, which) -> {
+                    PojavApplication.sExecutorService.execute(() -> {
+                        try {
+                            Instances.removeInstance(instance);
+                            Tools.runOnUiThread(this::reloadProfiles);
+                        } catch (Exception e) {
+                            Tools.runOnUiThread(() -> Tools.showError(getContext(), e));
+                        }
+                    });
+                })
+                .show();
+        }
+    }
+
     private void applyInstances(Instances instances) {
         mProfileAdapter.applyInstances(instances);
         setSelection(instances.selectedIndex);

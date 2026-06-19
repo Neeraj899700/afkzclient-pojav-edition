@@ -56,6 +56,7 @@ public class MainMenuFragment extends Fragment {
         ImageButton mOpenDirectoryButton = view.findViewById(R.id.open_files_button);
 
         ImageButton mEditProfileButton = view.findViewById(R.id.edit_profile_button);
+        ImageButton mDeleteProfileButton = view.findViewById(R.id.delete_profile_button);
         com.kdt.mcgui.MineButton mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
@@ -64,6 +65,7 @@ public class MainMenuFragment extends Fragment {
         mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
         mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation());
         mEditProfileButton.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
+        mDeleteProfileButton.setOnClickListener(v -> mVersionSpinner.deleteCurrentProfile(requireActivity()));
 
         mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
 
