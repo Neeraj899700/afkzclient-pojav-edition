@@ -141,7 +141,7 @@
         <LinearLayout
             android:id="@+id/play_row"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_44sdp"
+android:layout_height="@dimen/_47sdp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginHorizontal="@dimen/_12sdp"
