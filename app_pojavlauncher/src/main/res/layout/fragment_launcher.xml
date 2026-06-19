@@ -92,26 +92,26 @@
 
     </LinearLayout>
 
-    <!-- 16:9 Panel #1: Profile panel (empty, just outline) -->
+    <!-- Profile panel: same height as play button row -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_panel"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/_44sdp"
         android:layout_marginHorizontal="@dimen/_17sdp"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
         android:background="@drawable/preview_panel_bg"
-        app:layout_constraintDimensionRatio="16:6"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 16:9 Panel #2: Preview panel with version spinner + play/edit/delete, wider by 20px -->
+    <!-- Preview panel with version spinner + play/edit/delete -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/preview_panel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/_7sdp"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_0sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         android:background="@drawable/preview_panel_bg"
         app:layout_constraintDimensionRatio="16:5.5"
