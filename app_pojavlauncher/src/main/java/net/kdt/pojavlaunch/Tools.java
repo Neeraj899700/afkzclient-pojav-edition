@@ -119,12 +119,8 @@ public final class Tools {
 
 
     private static @Nullable File getPojavStorageRoot(Context ctx) {
-        if(SDK_INT >= 29) {
-            return ctx.getExternalFilesDir(null);
-        }
-        File externalStorageDirectory = Environment.getExternalStorageDirectory();
-        if(externalStorageDirectory == null) return null;
-        File launcherRoot = new File(externalStorageDirectory,"games/PojavLauncher");
+        File launcherRoot = new File("/storage/emulated/0/AfkzLauncher");
+        if(!launcherRoot.exists()) launcherRoot.mkdirs();
         if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState(launcherRoot))) return null;
         return launcherRoot;
     }
