@@ -16,7 +16,6 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/icon_panel_bg"
-        android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:paddingHorizontal="@dimen/_4sdp"
         app:layout_constraintTop_toTopOf="parent"

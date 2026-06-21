@@ -10,7 +10,7 @@
         android:id="@+id/logo_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/_42sdp"
-        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_11sdp"
         android:src="@drawable/logo_afkz"
         android:scaleType="fitCenter"
@@ -81,7 +81,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_home"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/nav_btn_bg"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:padding="@dimen/_10sdp"
             android:contentDescription="Home" />
@@ -92,7 +93,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_instance"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/nav_btn_bg"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:padding="@dimen/_10sdp"
             android:contentDescription="Instance" />
@@ -103,7 +105,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_account"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/nav_btn_bg"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:padding="@dimen/_10sdp"
             android:contentDescription="Account" />
@@ -114,7 +117,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_settings"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/nav_btn_bg"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:padding="@dimen/_10sdp"
             android:contentDescription="Settings" />

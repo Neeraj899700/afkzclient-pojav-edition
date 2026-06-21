@@ -55,6 +55,8 @@ public class LauncherActivity extends BaseActivity {
     private FragmentContainerView mFragmentView;
     private ImageButton mSettingsButton;
     private ImageButton mHomeButton;
+    private ImageButton mInstanceButton;
+    private ImageButton mAccountButton;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
     private NotificationManager mNotificationManager;
@@ -83,6 +85,7 @@ public class LauncherActivity extends BaseActivity {
 
     /* Listener for the settings fragment */
     private final View.OnClickListener mSettingButtonListener = v -> {
+        setNavSelected(v);
         FragmentManager manager = getSupportFragmentManager();
         if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
@@ -93,6 +96,29 @@ public class LauncherActivity extends BaseActivity {
 
     /* Listener for the home button - always go back to main menu */
     private final View.OnClickListener mHomeButtonListener = v -> {
+        setNavSelected(v);
+        FragmentManager manager = getSupportFragmentManager();
+        if(manager.isStateSaved()) return;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
+        if(!(fragment instanceof MainMenuFragment)){
+            Tools.backToMainMenu(this);
+        }
+    };
+
+    /* Listener for the account button - open account panel */
+    private final View.OnClickListener mAccountButtonListener = v -> {
+        setNavSelected(v);
+        FragmentManager manager = getSupportFragmentManager();
+        if(manager.isStateSaved()) return;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
+        if(fragment instanceof MainMenuFragment){
+            ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
+        }
+    };
+
+    /* Listener for the instance button - go to main menu */
+    private final View.OnClickListener mInstanceButtonListener = v -> {
+        setNavSelected(v);
         FragmentManager manager = getSupportFragmentManager();
         if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
@@ -189,6 +215,9 @@ public class LauncherActivity extends BaseActivity {
 
         mSettingsButton.setOnClickListener(mSettingButtonListener);
         mHomeButton.setOnClickListener(mHomeButtonListener);
+        mInstanceButton.setOnClickListener(mInstanceButtonListener);
+        mAccountButton.setOnClickListener(mAccountButtonListener);
+        mHomeButton.setSelected(true);
         ProgressKeeper.addTaskCountListener(mProgressLayout);
         ExtraCore.addExtraListener(ExtraConstants.BACK_PREFERENCE, mBackPreferenceListener);
         ExtraCore.addExtraListener(ExtraConstants.SELECT_AUTH_METHOD, mSelectAuthMethod);
@@ -303,11 +332,22 @@ public class LauncherActivity extends BaseActivity {
                 .apply();
     }
 
+    /** Update nav button selected states */
+    private void setNavSelected(View selectedView) {
+        mHomeButton.setSelected(false);
+        mInstanceButton.setSelected(false);
+        mAccountButton.setSelected(false);
+        mSettingsButton.setSelected(false);
+        selectedView.setSelected(true);
+    }
+
     /** Stuff all the view boilerplate here */
     private void bindViews(){
         mFragmentView = findViewById(R.id.container_fragment);
         mSettingsButton = findViewById(R.id.nav_settings_button);
         mHomeButton = findViewById(R.id.nav_home_button);
+        mInstanceButton = findViewById(R.id.nav_instance_button);
+        mAccountButton = findViewById(R.id.nav_account_button);
         mProgressLayout = findViewById(R.id.progress_layout);
     }
 }
