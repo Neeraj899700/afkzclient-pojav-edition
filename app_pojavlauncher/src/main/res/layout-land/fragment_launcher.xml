@@ -92,7 +92,7 @@
 
     </LinearLayout>
 
-    <!-- Bottom row: profile panel + preview panel side by side in landscape -->
+    <!-- Bottom row: two new panels + preview panel -->
     <LinearLayout
         android:id="@+id/bottom_row"
         android:layout_width="0dp"
@@ -106,16 +106,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Profile panel (empty, just outline) -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/profile_panel"
+        <!-- Two panels stacked vertically on left -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/_4sdp"
-            android:background="@drawable/preview_panel_bg" />
+            android:orientation="vertical">
 
-        <!-- Preview panel landscape with version spinner + play/edit/delete, 10px gap -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/panel_1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:background="@drawable/preview_panel_bg" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/panel_2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@drawable/preview_panel_bg" />
+
+        </LinearLayout>
+
+        <!-- Preview panel landscape with version spinner + play/edit/delete -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/preview_panel"
             android:layout_width="0dp"
