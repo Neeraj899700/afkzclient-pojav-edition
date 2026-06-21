@@ -96,7 +96,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_panel"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_44sdp"
+        android:layout_height="@dimen/_49sdp"
         android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_15sdp"
@@ -176,6 +176,7 @@ android:layout_height="@dimen/_47sdp"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_px_trash"
+                android:tint="#E53935"
                 android:scaleType="fitCenter"
                 android:padding="@dimen/_8sdp" />
 

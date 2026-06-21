@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Path;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -193,9 +194,30 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
     }
 
+    private final Paint mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        int w = getWidth();
+        int h = getHeight();
+        int arrowSize = (int)(12 * getResources().getDisplayMetrics().density);
+        int padding = (int)(4 * getResources().getDisplayMetrics().density);
+
+        mArrowPaint.setColor(0xFFFFFFFF);
+        mArrowPaint.setStyle(Paint.Style.FILL);
+        mArrowPaint.setStrokeWidth(2 * getResources().getDisplayMetrics().density);
+        mArrowPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        float cx = w - padding - arrowSize / 2f;
+        float cy = h / 2f;
+        float half = arrowSize / 3f;
+
+        Path path = new Path();
+        path.moveTo(cx - half, cy - half * 0.6f);
+        path.lineTo(cx, cy + half * 0.4f);
+        path.lineTo(cx + half, cy - half * 0.6f);
+        canvas.drawPath(path, mArrowPaint);
     }
 
     @Override
