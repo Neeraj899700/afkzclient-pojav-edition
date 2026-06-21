@@ -3,7 +3,7 @@
     android:color="@color/background_overlay">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/background_bottom_bar" />
+            <solid android:color="@color/account_panel_color" />
             <corners android:topLeftRadius="0dp" android:topRightRadius="0dp"
                 android:bottomLeftRadius="@dimen/_6sdp" android:bottomRightRadius="@dimen/_6sdp" />
         </shape>

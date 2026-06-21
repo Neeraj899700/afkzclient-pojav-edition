@@ -37,7 +37,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginBottom="@dimen/_2sdp"
-                android:background="@color/panel_color">
+                android:background="@drawable/panel_bg">
 
                 <com.kdt.mcgui.mcVersionSpinner
                     android:id="@+id/mc_version_spinner"
@@ -106,7 +106,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:background="@color/panel_color" />
+                android:background="@drawable/panel_bg" />
 
         </LinearLayout>
 
