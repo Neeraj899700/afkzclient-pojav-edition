@@ -47,13 +47,7 @@ public class MainMenuFragment extends Fragment {
 
     private final TaskCountListener mTaskCountListener = taskCount -> {
         if(getView() != null) {
-            getView().post(() -> {
-                if(taskCount > 0 && !mIsStopMode) {
-                    setStopMode(true);
-                } else if(taskCount == 0 && mIsStopMode) {
-                    setStopMode(false);
-                }
-            });
+            getView().post(() -> setStopMode(ProgressKeeper.getTaskCount() > 0));
         }
         return false;
     };
@@ -97,7 +91,7 @@ public class MainMenuFragment extends Fragment {
         mDeleteProfileButton.setOnClickListener(v -> mVersionSpinner.deleteCurrentProfile(requireActivity()));
 
         mPlayButton.setOnClickListener(v -> {
-            if(mIsStopMode) {
+            if(ProgressKeeper.getTaskCount() > 0) {
                 ProgressKeeper.clearAllProgress();
                 setStopMode(false);
                 Toast.makeText(requireContext(), R.string.tasks_cancelled, Toast.LENGTH_SHORT).show();

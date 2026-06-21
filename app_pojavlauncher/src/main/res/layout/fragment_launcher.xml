@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_8sdp"
-        android:background="@drawable/panel_bg"
+        android:background="@drawable/profile_panel_bg"
         app:layout_constraintTop_toBottomOf="@id/icon_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

@@ -109,7 +109,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/_4sdp"
-            android:background="@drawable/panel_bg">
+            android:background="@drawable/profile_panel_bg">
 
             <com.kdt.mcgui.mcVersionSpinner
                 android:id="@+id/mc_version_spinner"
