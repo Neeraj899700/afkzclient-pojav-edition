@@ -33,7 +33,7 @@
         android:dropDownWidth="@dimen/_250sdp"
         android:dropDownVerticalOffset="@dimen/_56sdp"
         android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/_12sdp"
+        android:paddingEnd="@dimen/_5sdp"
         android:popupBackground="@color/background_app"
         android:spinnerMode="dropdown"
         app:layout_constraintTop_toTopOf="parent"
