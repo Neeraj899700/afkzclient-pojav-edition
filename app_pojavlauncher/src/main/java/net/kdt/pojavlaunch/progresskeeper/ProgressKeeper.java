@@ -113,4 +113,17 @@ public class ProgressKeeper {
     public static boolean hasOngoingTasks() {
         return getTaskCount() > 0;
     }
+
+    public static synchronized void clearAllProgress() {
+        for(String key : new ArrayList<>(sProgressStates.keySet())) {
+            List<ProgressListener> listeners = sProgressListeners.get(key);
+            if(listeners != null) {
+                for(ProgressListener listener : listeners) {
+                    listener.onProgressEnded();
+                }
+            }
+        }
+        sProgressStates.clear();
+        updateTaskCount(0);
+    }
 }
