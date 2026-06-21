@@ -29,7 +29,7 @@
         android:layout_height="@dimen/_52sdp"
         android:layout_marginEnd="@dimen/_2sdp"
         android:layout_marginTop="@dimen/_8sdp"
-        android:background="@null"
+        android:background="@color/account_panel_color"
         android:dropDownWidth="@dimen/_250sdp"
         android:dropDownVerticalOffset="@dimen/_56sdp"
         android:paddingStart="@dimen/padding_small"

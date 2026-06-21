@@ -9,90 +9,7 @@
     android:orientation="vertical"
     android:background="@color/background_app">
 
-    <!-- Icon panel: premium round card -->
-    <LinearLayout
-        android:id="@+id/icon_panel"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_42sdp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="@drawable/icon_panel_bg"
-        android:layout_marginHorizontal="@dimen/_17sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:paddingHorizontal="@dimen/_4sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageButton
-            android:id="@+id/news_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_menu_news"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/mcl_tab_wiki" />
-
-        <ImageButton
-            android:id="@+id/social_media_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_discord"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/mcl_button_social_media" />
-
-        <ImageButton
-            android:id="@+id/custom_control_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_gamepad_pointer"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/mcl_option_customcontrol" />
-
-        <ImageButton
-            android:id="@+id/install_jar_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_menu_install_jar"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/main_install_jar_file" />
-
-        <ImageButton
-            android:id="@+id/share_logs_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_share_log"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/main_share_logs" />
-
-        <ImageButton
-            android:id="@+id/open_files_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_folder_open"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_8sdp"
-            android:contentDescription="@string/mcl_button_open_directory" />
-
-    </LinearLayout>
-
-    <!-- Bottom row: two new panels + preview panel -->
+    <!-- Bottom row: panel_1 (with content) + panel_2 on left, icon_panel on right -->
     <LinearLayout
         android:id="@+id/bottom_row"
         android:layout_width="0dp"
@@ -101,12 +18,12 @@
         android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_5sdp"
-        app:layout_constraintTop_toBottomOf="@id/icon_panel"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Two panels stacked vertically on left -->
+        <!-- Left side: panel_1 (profile) + panel_2 stacked -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -120,7 +37,68 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginBottom="@dimen/_2sdp"
-                android:background="@drawable/preview_panel_bg" />
+                android:background="@color/panel_color">
+
+                <com.kdt.mcgui.mcVersionSpinner
+                    android:id="@+id/mc_version_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_45sdp"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:background="@android:color/transparent"
+                    android:drawableEnd="@drawable/ic_spinner_arrow"
+                    app:drawableEndSize="@dimen/_12sdp"
+                    app:drawableStartIntegerScaling="true"
+                    app:drawableStartSize="@dimen/_36sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/play_row"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_4sdp"
+                    app:layout_constraintTop_toBottomOf="@id/mc_version_spinner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.kdt.mcgui.MineButton
+                        android:id="@+id/play_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        android:text="@string/main_play"
+                        android:textAllCaps="true" />
+
+                    <ImageButton
+                        android:id="@+id/edit_profile_button"
+                        android:layout_width="@dimen/_36sdp"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_px_edit"
+                        android:scaleType="fitCenter"
+                        android:padding="@dimen/_6sdp" />
+
+                    <ImageButton
+                        android:id="@+id/delete_profile_button"
+                        android:layout_width="@dimen/_36sdp"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_px_trash"
+                        android:tint="#E53935"
+                        android:scaleType="fitCenter"
+                        android:padding="@dimen/_6sdp" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/panel_2"
@@ -128,80 +106,89 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:background="@drawable/preview_panel_bg" />
+                android:background="@color/panel_color" />
 
         </LinearLayout>
 
-        <!-- Preview panel landscape with version spinner + play/edit/delete -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/preview_panel"
+        <!-- Right side: icon panel -->
+        <LinearLayout
+            android:id="@+id/icon_panel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/_4sdp"
-            android:background="@drawable/preview_panel_bg">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/icon_panel_bg"
+            android:paddingHorizontal="@dimen/_4sdp">
 
-            <com.kdt.mcgui.mcVersionSpinner
-                android:id="@+id/mc_version_spinner"
+            <ImageButton
+                android:id="@+id/news_button"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_45sdp"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:background="@android:color/transparent"
-                android:drawableEnd="@drawable/ic_spinner_arrow"
-                app:drawableEndSize="@dimen/_12sdp"
-                app:drawableStartIntegerScaling="true"
-                app:drawableStartSize="@dimen/_36sdp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_news"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/mcl_tab_wiki" />
 
-            <!-- Play button + edit/delete with 10px gap from spinner -->
-            <LinearLayout
-                android:id="@+id/play_row"
+            <ImageButton
+                android:id="@+id/social_media_button"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_4sdp"
-                app:layout_constraintTop_toBottomOf="@id/mc_version_spinner"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_discord"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/mcl_button_social_media" />
 
-                <com.kdt.mcgui.MineButton
-                    android:id="@+id/play_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/_6sdp"
-                    android:text="@string/main_play"
-                    android:textAllCaps="true" />
+            <ImageButton
+                android:id="@+id/custom_control_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_gamepad_pointer"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/mcl_option_customcontrol" />
 
-                <ImageButton
-                    android:id="@+id/edit_profile_button"
-                    android:layout_width="@dimen/_36sdp"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_px_edit"
-                    android:scaleType="fitCenter"
-                    android:padding="@dimen/_6sdp" />
+            <ImageButton
+                android:id="@+id/install_jar_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_install_jar"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/main_install_jar_file" />
 
-                <ImageButton
-                    android:id="@+id/delete_profile_button"
-                    android:layout_width="@dimen/_36sdp"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_px_trash"
-                    android:tint="#E53935"
-                    android:scaleType="fitCenter"
-                    android:padding="@dimen/_6sdp" />
+            <ImageButton
+                android:id="@+id/share_logs_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_share_log"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/main_share_logs" />
 
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/open_files_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_folder_open"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8sdp"
+                android:contentDescription="@string/mcl_button_open_directory" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

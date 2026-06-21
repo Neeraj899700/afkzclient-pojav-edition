@@ -128,8 +128,8 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         setOnItemSelectedListener(this);
         reload();
 
-        // Completely strip AppCompatSpinner's default background
-        setBackground(null);
+        // Set account panel background color
+        setBackgroundColor(getResources().getColor(R.color.account_panel_color));
 
         mLoginBarPaint.setColor(getResources().getColor(R.color.minebutton_color));
         mLoginBarPaint.setStrokeWidth(getResources().getDimensionPixelOffset(R.dimen._2sdp));

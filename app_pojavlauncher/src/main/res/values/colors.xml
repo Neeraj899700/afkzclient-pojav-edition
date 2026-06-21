@@ -4,7 +4,9 @@
     <color name="control_button_pressed_color">#4D000000</color>
 
     <color name="minebutton_color">#57CC33</color>
-    <color name="background_app">#121213</color>
+    <color name="background_app">#161616</color>
+    <color name="panel_color">#232323</color>
+    <color name="account_panel_color">#2C2C2C</color>
     <color name="divider">#202021</color>
     <color name="background_overlay">#464646</color>
     <color name="background_status_bar">#202021</color>
