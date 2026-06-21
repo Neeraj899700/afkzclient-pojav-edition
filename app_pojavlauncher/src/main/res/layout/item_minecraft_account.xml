@@ -29,6 +29,16 @@
         tools:ignore="RtlSymmetry" />
 
     <ImageView
+        android:id="@+id/dropdown_arrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:src="@drawable/ic_spinner_arrow"
+        android:scaleType="center"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:contentDescription="@null" />
+
+    <ImageView
         android:id="@+id/delete_account_button"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"

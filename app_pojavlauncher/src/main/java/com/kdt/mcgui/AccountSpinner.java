@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Path;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -194,30 +193,9 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
     }
 
-    private final Paint mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        int w = getWidth();
-        int h = getHeight();
-        int arrowSize = (int)(12 * getResources().getDisplayMetrics().density);
-        int padding = (int)(4 * getResources().getDisplayMetrics().density);
-
-        mArrowPaint.setColor(0xFFFFFFFF);
-        mArrowPaint.setStyle(Paint.Style.FILL);
-        mArrowPaint.setStrokeWidth(2 * getResources().getDisplayMetrics().density);
-        mArrowPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        float cx = w - padding - arrowSize / 2f;
-        float cy = h / 2f;
-        float half = arrowSize / 3f;
-
-        Path path = new Path();
-        path.moveTo(cx - half, cy - half * 0.6f);
-        path.lineTo(cx, cy + half * 0.4f);
-        path.lineTo(cx + half, cy - half * 0.6f);
-        canvas.drawPath(path, mArrowPaint);
     }
 
     @Override
@@ -340,6 +318,7 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
 
             ExtendedTextView textview = view.findViewById(R.id.account_item);
             ImageView deleteButton = view.findViewById(R.id.delete_account_button);
+            ImageView dropdownArrow = view.findViewById(R.id.dropdown_arrow);
 
             if(position == 0) {
                 // "Add account" button
@@ -347,6 +326,7 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
                 textview.setCompoundDrawables(plusDrawable, null, null, null);
                 textview.setText(R.string.main_add_account);
                 deleteButton.setVisibility(View.GONE);
+                dropdownArrow.setVisibility(View.GONE);
                 // Only activate the listener behaviour when in drop-down mode
                 // or when there's no accounts
                 if(isDropDown || getCount() == 1) view.setOnClickListener(v-> createAccount());
@@ -356,8 +336,10 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
             if(isDropDown) {
                 deleteButton.setVisibility(View.VISIBLE);
                 deleteButton.setOnClickListener((v)->showDeleteDialog(v.getContext(), position));
+                dropdownArrow.setVisibility(View.GONE);
             }else {
                 deleteButton.setVisibility(View.GONE);
+                dropdownArrow.setVisibility(View.VISIBLE);
             }
 
 

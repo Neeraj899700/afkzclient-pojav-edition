@@ -124,18 +124,18 @@
         <com.kdt.mcgui.mcVersionSpinner
             android:id="@+id/mc_version_spinner"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_spinner_arrow"
-            app:drawableEndSize="@dimen/padding_heavy"
-            app:drawableStartIntegerScaling="true"
-            app:drawableStartSize="@dimen/_36sdp"
-            app:drawableEndPadding="@dimen/_1sdp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:background="@android:color/transparent"
+        android:drawableEnd="@drawable/ic_spinner_arrow"
+        app:drawableEndSize="@dimen/padding_heavy"
+        app:drawableStartIntegerScaling="true"
+        app:drawableStartSize="@dimen/_36sdp"
+        app:drawableEndPadding="@dimen/_1sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Play button + Edit + Delete in one row, 10px gap from spinner -->
         <LinearLayout

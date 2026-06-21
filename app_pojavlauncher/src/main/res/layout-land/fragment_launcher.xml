@@ -127,7 +127,7 @@
             <com.kdt.mcgui.mcVersionSpinner
                 android:id="@+id/mc_version_spinner"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_45sdp"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_4sdp"
                 android:background="@android:color/transparent"
