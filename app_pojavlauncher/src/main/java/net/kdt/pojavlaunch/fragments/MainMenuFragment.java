@@ -29,6 +29,8 @@ import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
+import net.kdt.pojavlaunch.services.GameService;
+import net.kdt.pojavlaunch.services.ProgressService;
 import net.kdt.pojavlaunch.utils.FileUtils;
 
 import java.io.File;
@@ -95,6 +97,12 @@ public class MainMenuFragment extends Fragment {
                 ProgressKeeper.clearAllProgress();
                 setStopMode(false);
                 Toast.makeText(requireContext(), R.string.tasks_cancelled, Toast.LENGTH_SHORT).show();
+                Intent killProgress = new Intent(requireContext(), ProgressService.class);
+                killProgress.putExtra("kill", true);
+                requireContext().startService(killProgress);
+                Intent killGame = new Intent(requireContext(), GameService.class);
+                killGame.putExtra("kill", true);
+                requireContext().startService(killGame);
             } else {
                 ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true);
             }
