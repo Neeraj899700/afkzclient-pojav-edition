@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/icon_panel_bg"
-        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:paddingHorizontal="@dimen/_4sdp"
         app:layout_constraintTop_toTopOf="parent"
@@ -173,13 +173,30 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/panel_2"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/_4sdp"
-            android:background="@drawable/panel_bg" />
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/panel_2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:background="@drawable/panel_bg" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/panel_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@drawable/panel_bg" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/icon_panel_bg"
-        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:paddingHorizontal="@dimen/_4sdp"
         app:layout_constraintTop_toTopOf="parent"
@@ -165,18 +165,36 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Panel 2 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/panel_2"
+    <!-- Panel 2 + Panel 3 stacked equally -->
+    <LinearLayout
+        android:id="@+id/bottom_section"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_6sdp"
         android:layout_marginBottom="@dimen/_5sdp"
-        android:background="@drawable/panel_bg"
         app:layout_constraintTop_toBottomOf="@id/panel_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/panel_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:background="@drawable/panel_bg" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/panel_3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:background="@drawable/panel_bg" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
