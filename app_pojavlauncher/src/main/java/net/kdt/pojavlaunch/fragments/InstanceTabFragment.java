@@ -620,31 +620,22 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         File rpDir = new File(gameDir, "resourcepacks");
         mResourcePackEntries = new ArrayList<>();
 
-        List<String> activePacks = readActiveResourcePacks(gameDir);
-
         File[] allFiles = rpDir.listFiles();
-        int total = 0, active = 0;
         if(allFiles != null) {
             for(File f : allFiles) {
                 String name = f.getName();
                 if(!name.endsWith(".zip")) continue;
-
-                total++;
-                boolean isSelected = activePacks.contains(name);
-                if(isSelected) active++;
 
                 PackMeta meta = readPackMeta(f);
                 mResourcePackEntries.add(new ResourcePackEntry(name,
                         meta != null ? meta.name : null,
                         meta != null ? meta.description : null,
                         meta != null ? meta.format : 0,
-                        isSelected, f));
+                        false, f));
             }
         }
 
-        int inactive = total - active;
-        mResourcePacksHeader.setText(total + " resource pack" + (total != 1 ? "s" : "")
-                + " (" + active + " active" + (inactive > 0 ? ", " + inactive + " inactive" : "") + ")");
+        mResourcePacksHeader.setText(mResourcePackEntries.size() + " resource pack" + (mResourcePackEntries.size() != 1 ? "s" : ""));
 
         mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
                 null, false);
