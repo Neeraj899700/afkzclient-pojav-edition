@@ -2,7 +2,6 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,12 +153,7 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
                 iconImage.setVisibility(View.GONE);
                 iconText.setText("R");
                 iconText.setTextColor(0xFFFFFFFF);
-                iconText.setBackgroundResource(android.R.color.transparent);
-                GradientDrawable rpBg = new GradientDrawable();
-                rpBg.setShape(GradientDrawable.OVAL);
-                rpBg.setSize(36, 36);
-                rpBg.setColor(COLOR_PACK);
-                iconText.setBackground(rpBg);
+                iconText.setBackgroundColor(COLOR_PACK);
             }
             toggle.setVisibility(View.GONE);
         }
