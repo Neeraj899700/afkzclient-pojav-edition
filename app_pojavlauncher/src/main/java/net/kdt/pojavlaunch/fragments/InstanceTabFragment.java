@@ -1,6 +1,9 @@
 package net.kdt.pojavlaunch.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +56,9 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private TextView mInstanceSelector;
     private TextView mTabMeta, mTabMods, mTabResourcePacks;
     private ScrollView mMetaContent;
+    private LinearLayout mModsContainer, mResourcePacksContainer;
     private ListView mModsList, mResourcePacksList;
+    private TextView mModsHeader;
 
     private ImageView mInstanceIcon;
     private EditText mEditorName;
@@ -65,8 +70,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private TextView mEditorControl;
     private Button mEditorControlButton;
     private CheckBox mEditorSharedData;
+    private TextView mEditorDiskUsage;
     private Button mEditorSave;
     private Button mEditorDelete;
+    private Button mEditorOpenDir;
 
     private List<Instance> mInstances;
     private Instance mCurrentInstance;
@@ -85,7 +92,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mTabMods = view.findViewById(R.id.tab_mods);
         mTabResourcePacks = view.findViewById(R.id.tab_resourcepacks);
         mMetaContent = view.findViewById(R.id.meta_content);
+        mModsContainer = view.findViewById(R.id.mods_container);
         mModsList = view.findViewById(R.id.mods_list);
+        mModsHeader = view.findViewById(R.id.mods_header);
+        mResourcePacksContainer = view.findViewById(R.id.resourcepacks_container);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
 
         mInstanceIcon = view.findViewById(R.id.editor_icon);
@@ -98,8 +108,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorControl = view.findViewById(R.id.editor_control);
         mEditorControlButton = view.findViewById(R.id.editor_control_button);
         mEditorSharedData = view.findViewById(R.id.editor_shared_data);
+        mEditorDiskUsage = view.findViewById(R.id.editor_disk_usage);
         mEditorSave = view.findViewById(R.id.editor_save);
         mEditorDelete = view.findViewById(R.id.editor_delete);
+        mEditorOpenDir = view.findViewById(R.id.editor_open_dir);
 
         loadInstances();
 
@@ -175,6 +187,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
             dialog.show(getChildFragmentManager(), "delete_dialog");
         });
+        mEditorOpenDir.setOnClickListener(v -> openGameDirectory());
     }
 
     private void loadInstances() {
@@ -219,6 +232,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorJvmArgs.setText(nullToEmpty(mCurrentInstance.jvmArgs));
         mEditorControl.setText(nullToEmpty(mCurrentInstance.controlLayout));
         mEditorSharedData.setChecked(mCurrentInstance.sharedData);
+
+        updateDiskUsage();
 
         String value = (String) ExtraCore.consumeValue(ExtraConstants.FILE_SELECTOR);
         if(value != null) {
@@ -279,8 +294,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
     private void showTab(int tab) {
         mMetaContent.setVisibility(tab == 0 ? View.VISIBLE : View.GONE);
-        mModsList.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
-        mResourcePacksList.setVisibility(tab == 2 ? View.VISIBLE : View.GONE);
+        mModsContainer.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
+        mResourcePacksContainer.setVisibility(tab == 2 ? View.VISIBLE : View.GONE);
 
         int green = 0xFF57CC33;
         int white = 0xFFFFFFFF;
@@ -299,21 +314,29 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         List<ModEntry> entries = new ArrayList<>();
 
         File[] allFiles = modsDir.listFiles();
+        int total = 0, enabled = 0;
         if(allFiles != null) {
             for(File f : allFiles) {
                 String name = f.getName();
-                boolean enabled = !name.endsWith(".disabled");
+                boolean isEnabled = !name.endsWith(".disabled");
                 String realName = name.replaceAll("\\.disabled$", "");
                 if(!realName.endsWith(".jar")) continue;
+
+                total++;
+                if(isEnabled) enabled++;
 
                 ModMetadata meta = readModMetadata(f);
                 entries.add(new ModEntry(realName,
                         meta != null ? meta.name : null,
                         meta != null ? meta.description : null,
                         meta != null ? meta.author : null,
-                        enabled));
+                        isEnabled));
             }
         }
+
+        int disabled = total - enabled;
+        mModsHeader.setText(total + " mod" + (total != 1 ? "s" : "") + " loaded"
+                + (disabled > 0 ? ", " + disabled + " disabled" : ""));
 
         mModsList.setAdapter(new FileListAdapter(LayoutInflater.from(requireContext()), entries,
                 (position, isChecked) -> toggleMod(entries.get(position))));
@@ -366,6 +389,55 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         if(source.renameTo(target)) {
             loadResourcePacksList();
         }
+    }
+
+    private void openGameDirectory() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        if(!gameDir.exists()) {
+            Toast.makeText(requireContext(), "Directory does not exist", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(gameDir), "resource/folder");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(intent);
+        } catch(Exception e) {
+            // Fallback: use DocumentsContract or just show a toast
+            try {
+                Intent fallback = new Intent(Intent.ACTION_VIEW);
+                fallback.setDataAndType(Uri.fromFile(gameDir), "*/*");
+                startActivity(fallback);
+            } catch(Exception e2) {
+                Toast.makeText(requireContext(), "No file manager found", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void updateDiskUsage() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        new Thread(() -> {
+            long size = folderSize(gameDir);
+            String human = humanReadableSize(size);
+            requireActivity().runOnUiThread(() ->
+                    mEditorDiskUsage.setText(human));
+        }).start();
+    }
+
+    private long folderSize(File dir) {
+        long size = 0;
+        File[] files = dir.listFiles();
+        if(files == null) return 0;
+        for(File f : files) {
+            if(f.isDirectory()) {
+                size += folderSize(f);
+            } else {
+                size += f.length();
+            }
+        }
+        return size;
     }
 
     private static class ModMetadata {

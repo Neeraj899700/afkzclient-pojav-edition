@@ -177,6 +177,24 @@
                             android:textColor="#121213"
                             android:paddingHorizontal="@dimen/_10sdp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Disk Usage"
+                        android:textColor="#888888"
+                        android:textSize="@dimen/_11ssp" />
+                    <TextView
+                        android:id="@+id/editor_disk_usage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/background_line"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/_13ssp"
+                        android:hint="Calculating..." />
                 </LinearLayout>
 
                 <!-- Runtime Card -->
@@ -323,56 +341,99 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:background="@drawable/panel_bg"
                     android:padding="@dimen/_12sdp"
                     android:layout_marginBottom="@dimen/_6sdp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/editor_save"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_42sdp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:background="@drawable/mine_button_background"
+                            android:text="Save"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/_13ssp"
+                            android:textColor="#121213" />
+
+                        <Button
+                            android:id="@+id/editor_delete"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_42sdp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_4sdp"
+                            android:background="@drawable/stop_button_background"
+                            android:text="Delete"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/_13ssp"
+                            android:textColor="#FFFFFF" />
+                    </LinearLayout>
+
                     <Button
-                        android:id="@+id/editor_save"
-                        android:layout_width="0dp"
+                        android:id="@+id/editor_open_dir"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/_42sdp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
                         android:background="@drawable/mine_button_background"
-                        android:text="Save"
+                        android:text="Open Game Directory"
                         android:textAllCaps="false"
                         android:textSize="@dimen/_13ssp"
                         android:textColor="#121213" />
-
-                    <Button
-                        android:id="@+id/editor_delete"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_42sdp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:background="@drawable/stop_button_background"
-                        android:text="Delete"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/_13ssp"
-                        android:textColor="#FFFFFF" />
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
         <!-- Mods list -->
-        <ListView
-            android:id="@+id/mods_list"
+        <LinearLayout
+            android:id="@+id/mods_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:divider="#33FFFFFF"
-            android:dividerHeight="1dp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mods_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/panel_bg"
+                android:padding="@dimen/_8sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/primary_text"
+                android:layout_marginBottom="@dimen/_4sdp" />
+
+            <ListView
+                android:id="@+id/mods_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="#33FFFFFF"
+                android:dividerHeight="1dp" />
+        </LinearLayout>
 
         <!-- Resource packs list -->
-        <ListView
-            android:id="@+id/resourcepacks_list"
+        <LinearLayout
+            android:id="@+id/resourcepacks_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:divider="#33FFFFFF"
-            android:dividerHeight="1dp" />
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/resourcepacks_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="#33FFFFFF"
+                android:dividerHeight="1dp" />
+        </LinearLayout>
 
     </FrameLayout>
 
