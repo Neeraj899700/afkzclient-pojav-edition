@@ -652,6 +652,46 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mResourcePacksList.setAdapter(mResourcePacksAdapter);
     }
 
+    private void loadResourcePacksList() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File rpDir = new File(gameDir, "resourcepacks");
+        mResourcePackEntries = new ArrayList<>();
+
+        List<String> activePacks = readActiveResourcePacks(gameDir);
+
+        File[] allFiles = rpDir.listFiles();
+        int total = 0, active = 0;
+        if(allFiles != null) {
+            for(File f : allFiles) {
+                String name = f.getName();
+                if(!name.endsWith(".zip")) continue;
+
+                total++;
+                boolean isSelected = activePacks.contains(name);
+                if(isSelected) active++;
+
+                PackMeta meta = readPackMeta(f);
+                mResourcePackEntries.add(new ResourcePackEntry(name,
+                        meta != null ? meta.name : null,
+                        meta != null ? meta.description : null,
+                        meta != null ? meta.format : 0,
+                        isSelected, f));
+            }
+        }
+
+        int inactive = total - active;
+        mResourcePacksHeader.setText(total + " resource pack" + (total != 1 ? "s" : "")
+                + " (" + active + " active" + (inactive > 0 ? ", " + inactive + " inactive" : "") + ")");
+
+        mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
+                (position, isChecked) -> {
+                    Object item = mResourcePacksAdapter.getItem(position);
+                    if(item instanceof ResourcePackEntry) toggleResourcePack((ResourcePackEntry) item);
+                });
+        mResourcePacksList.setAdapter(mResourcePacksAdapter);
+    }
+
     private void toggleMod(ModEntry entry) {
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
@@ -663,15 +703,73 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         }
     }
 
+    private List<String> readActiveResourcePacks(File gameDir) {
+        List<String> packs = new ArrayList<>();
+        File optionsFile = new File(gameDir, "options.txt");
+        if(!optionsFile.exists()) return packs;
+        try (java.util.Scanner scanner = new java.util.Scanner(optionsFile)) {
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if(line.startsWith("resourcePacks:")) {
+                    String json = line.substring("resourcePacks:".length());
+                    com.google.gson.JsonArray arr = new com.google.gson.JsonParser().parse(json).getAsJsonArray();
+                    for(int i = 0; i < arr.size(); i++) packs.add(arr.get(i).getAsString());
+                }
+            }
+        } catch(Exception ignored) {}
+        return packs;
+    }
+
+    private void writeActiveResourcePacks(File gameDir, List<String> activePacks) {
+        File optionsFile = new File(gameDir, "options.txt");
+        List<String> lines = new ArrayList<>();
+        boolean found = false;
+        if(optionsFile.exists()) {
+            try (java.util.Scanner scanner = new java.util.Scanner(optionsFile)) {
+                while(scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if(line.startsWith("resourcePacks:")) {
+                        StringBuilder sb = new StringBuilder("resourcePacks:[");
+                        for(int i = 0; i < activePacks.size(); i++) {
+                            if(i > 0) sb.append(",");
+                            sb.append("\"").append(activePacks.get(i)).append("\"");
+                        }
+                        sb.append("]");
+                        lines.add(sb.toString());
+                        found = true;
+                    } else {
+                        lines.add(line);
+                    }
+                }
+            } catch(Exception ignored) {}
+        }
+        if(!found) {
+            StringBuilder sb = new StringBuilder("resourcePacks:[");
+            for(int i = 0; i < activePacks.size(); i++) {
+                if(i > 0) sb.append(",");
+                sb.append("\"").append(activePacks.get(i)).append("\"");
+            }
+            sb.append("]");
+            lines.add(sb.toString());
+        }
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(optionsFile)) {
+            for(String line : lines) pw.println(line);
+        } catch(Exception e) {
+            Toast.makeText(requireContext(), "Failed to save resource pack state", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void toggleResourcePack(ResourcePackEntry entry) {
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
-        File rpDir = new File(gameDir, "resourcepacks");
-        File source = new File(rpDir, entry.enabled ? entry.fileName : entry.fileName + ".disabled");
-        File target = new File(rpDir, entry.enabled ? entry.fileName + ".disabled" : entry.fileName);
-        if(source.renameTo(target)) {
-            loadResourcePacksList();
+        List<String> activePacks = readActiveResourcePacks(gameDir);
+        if(activePacks.contains(entry.fileName)) {
+            activePacks.remove(entry.fileName);
+        } else {
+            activePacks.add(entry.fileName);
         }
+        writeActiveResourcePacks(gameDir, activePacks);
+        loadResourcePacksList();
     }
 
     private void openGameDirectory() {
