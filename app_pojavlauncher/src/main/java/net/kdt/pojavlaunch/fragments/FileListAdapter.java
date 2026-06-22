@@ -123,7 +123,7 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             name = rp.displayName != null ? rp.displayName : rp.fileName;
             String fmt = rp.packFormat > 0 ? " (format " + rp.packFormat + ")" : "";
             desc = rp.description != null && !rp.description.isEmpty() ? rp.description + fmt : fmt;
-            if(!rp.enabled) desc = "DISABLED - " + desc;
+            if(!rp.enabled) desc = "INACTIVE - " + desc;
             enabled = rp.enabled;
 
             // Try to load pack.png thumbnail

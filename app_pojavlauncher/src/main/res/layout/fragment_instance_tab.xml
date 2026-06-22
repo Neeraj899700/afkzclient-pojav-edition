@@ -575,8 +575,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:divider="#33FFFFFF"
-                android:dividerHeight="1dp" />
+                android:divider="@null"
+                android:dividerHeight="0dp" />
         </LinearLayout>
 
         <!-- Resource packs container -->
@@ -599,12 +599,23 @@
                 android:singleLine="true"
                 android:layout_marginBottom="@dimen/_4sdp" />
 
+            <TextView
+                android:id="@+id/resourcepacks_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/panel_bg"
+                android:padding="@dimen/_8sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/primary_text"
+                android:layout_marginBottom="@dimen/_4sdp" />
+
             <ListView
                 android:id="@+id/resourcepacks_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="#33FFFFFF"
-                android:dividerHeight="1dp" />
+                android:divider="@null"
+                android:dividerHeight="0dp" />
         </LinearLayout>
 
     </FrameLayout>

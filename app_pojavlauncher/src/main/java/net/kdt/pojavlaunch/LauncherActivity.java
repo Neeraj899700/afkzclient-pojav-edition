@@ -90,7 +90,7 @@ public class LauncherActivity extends BaseActivity {
         FragmentManager manager = getSupportFragmentManager();
         if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
-        if(fragment instanceof MainMenuFragment){
+        if(!(fragment instanceof LauncherPreferenceFragment)){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
         }
     };

@@ -71,6 +71,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private LinearLayout mModsContainer, mResourcePacksContainer;
     private ListView mModsList, mResourcePacksList;
     private TextView mModsHeader;
+    private TextView mResourcePacksHeader;
     private EditText mModsSearch, mResourcePacksSearch;
 
     private ImageView mInstanceIcon;
@@ -123,6 +124,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mModsSearch = view.findViewById(R.id.mods_search);
         mResourcePacksContainer = view.findViewById(R.id.resourcepacks_container);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
+        mResourcePacksHeader = view.findViewById(R.id.resourcepacks_header);
         mResourcePacksSearch = view.findViewById(R.id.resourcepacks_search);
 
         mInstanceIcon = view.findViewById(R.id.editor_icon);
@@ -618,12 +620,16 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mResourcePackEntries = new ArrayList<>();
 
         File[] allFiles = rpDir.listFiles();
+        int total = 0, active = 0;
         if(allFiles != null) {
             for(File f : allFiles) {
                 String name = f.getName();
                 boolean enabled = !name.endsWith(".disabled");
                 String realName = name.replaceAll("\\.disabled$", "");
                 if(!realName.endsWith(".zip")) continue;
+
+                total++;
+                if(enabled) active++;
 
                 PackMeta meta = readPackMeta(f);
                 mResourcePackEntries.add(new ResourcePackEntry(realName,
@@ -633,6 +639,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                         enabled, f));
             }
         }
+
+        int inactive = total - active;
+        mResourcePacksHeader.setText(total + " resource pack" + (total != 1 ? "s" : "")
+                + " (" + active + " active" + (inactive > 0 ? ", " + inactive + " inactive" : "") + ")");
 
         mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
                 (position, isChecked) -> {
