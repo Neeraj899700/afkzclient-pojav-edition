@@ -613,44 +613,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mModsList.setAdapter(mModsAdapter);
     }
 
-    private void loadResourcePacksList() {
-        if(mCurrentInstance == null) return;
-        File gameDir = mCurrentInstance.getGameDirectory();
-        File rpDir = new File(gameDir, "resourcepacks");
-        mResourcePackEntries = new ArrayList<>();
-
-        File[] allFiles = rpDir.listFiles();
-        int total = 0, active = 0;
-        if(allFiles != null) {
-            for(File f : allFiles) {
-                String name = f.getName();
-                boolean enabled = !name.endsWith(".disabled");
-                String realName = name.replaceAll("\\.disabled$", "");
-                if(!realName.endsWith(".zip")) continue;
-
-                total++;
-                if(enabled) active++;
-
-                PackMeta meta = readPackMeta(f);
-                mResourcePackEntries.add(new ResourcePackEntry(realName,
-                        meta != null ? meta.name : null,
-                        meta != null ? meta.description : null,
-                        meta != null ? meta.format : 0,
-                        enabled, f));
-            }
-        }
-
-        int inactive = total - active;
-        mResourcePacksHeader.setText(total + " resource pack" + (total != 1 ? "s" : "")
-                + " (" + active + " active" + (inactive > 0 ? ", " + inactive + " inactive" : "") + ")");
-
-        mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
-                (position, isChecked) -> {
-                    Object item = mResourcePacksAdapter.getItem(position);
-                    if(item instanceof ResourcePackEntry) toggleResourcePack((ResourcePackEntry) item);
-                });
-        mResourcePacksList.setAdapter(mResourcePacksAdapter);
-    }
 
     private void loadResourcePacksList() {
         if(mCurrentInstance == null) return;
