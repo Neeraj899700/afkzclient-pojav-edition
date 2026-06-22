@@ -605,10 +605,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
         mModsAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mModEntries,
                 (position, isChecked) -> {
-                    int pos = mModsList.getFirstVisiblePosition();
-                    if(pos >= 0 && pos < mModEntries.size()) {
-                        toggleMod(mModEntries.get(pos + (position - (mModsList.getFirstVisiblePosition()))));
-                    }
+                    Object item = mModsAdapter.getItem(position);
+                    if(item instanceof ModEntry) toggleMod((ModEntry) item);
                 });
         mModsList.setAdapter(mModsAdapter);
     }
@@ -638,10 +636,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
         mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
                 (position, isChecked) -> {
-                    int first = mResourcePacksList.getFirstVisiblePosition();
-                    if(first >= 0 && first < mResourcePackEntries.size()) {
-                        toggleResourcePack(mResourcePackEntries.get(first + (position - mResourcePacksList.getFirstVisiblePosition())));
-                    }
+                    Object item = mResourcePacksAdapter.getItem(position);
+                    if(item instanceof ResourcePackEntry) toggleResourcePack((ResourcePackEntry) item);
                 });
         mResourcePacksList.setAdapter(mResourcePacksAdapter);
     }
