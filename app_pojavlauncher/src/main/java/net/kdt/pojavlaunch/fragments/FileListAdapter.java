@@ -98,7 +98,6 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
         Object item = mFilteredItems.get(position);
         String name = "";
         String desc = "";
-        String icon = "📦";
         boolean enabled = true;
 
         if(item instanceof ModEntry) {
@@ -112,12 +111,9 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             }
             desc = mod.description != null && !mod.description.isEmpty() ? mod.description : parts;
             if(!mod.enabled) desc = "DISABLED - " + desc;
-            icon = "🔧";
             enabled = mod.enabled;
-
-            iconText.setVisibility(View.VISIBLE);
+            iconText.setText("🔧");
             iconImage.setVisibility(View.GONE);
-            iconText.setText(icon);
         } else if(item instanceof ResourcePackEntry) {
             ResourcePackEntry rp = (ResourcePackEntry) item;
             name = rp.displayName != null ? rp.displayName : rp.fileName;
@@ -129,7 +125,7 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             // Try to load pack.png thumbnail
             Bitmap thumbnail = loadPackThumbnail(rp.file);
             if(thumbnail != null) {
-                iconText.setVisibility(View.GONE);
+                iconText.setVisibility(View.INVISIBLE);
                 iconImage.setVisibility(View.VISIBLE);
                 iconImage.setImageBitmap(thumbnail);
             } else {

@@ -17,7 +17,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="@dimen/_18ssp"
-            android:visibility="gone" />
+            android:textColor="@color/primary_text"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/file_icon_image"
