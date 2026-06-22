@@ -22,6 +22,7 @@ import net.kdt.pojavlaunch.multirt.MultiRTUtils;
 import net.kdt.pojavlaunch.multirt.RTSpinnerAdapter;
 import net.kdt.pojavlaunch.multirt.Runtime;
 import net.kdt.pojavlaunch.profiles.VersionSelectorDialog;
+import net.kdt.pojavlaunch.profiles.VersionSelectorListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class InstanceTabFragment extends Fragment {
 
         mEditorVersion.setOnClickListener(v -> {
             if(mCurrentInstance != null) {
-                VersionSelectorDialog.open(requireActivity(), mCurrentInstance.versionId, version -> {
+                VersionSelectorDialog.open(requireActivity(), false, (version, isSnapshot) -> {
                     mCurrentInstance.versionId = version;
                     mEditorVersion.setText(version);
                 });
