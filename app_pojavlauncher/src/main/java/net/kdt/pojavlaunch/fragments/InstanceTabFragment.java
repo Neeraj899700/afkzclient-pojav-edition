@@ -2,6 +2,7 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +39,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
+import java.util.Scanner;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 public class InstanceTabFragment extends Fragment implements CropperUtils.CropperReceiver {
 
@@ -289,28 +296,144 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
         File modsDir = new File(gameDir, "mods");
-        File[] modFiles = modsDir.listFiles((dir, name) -> name.endsWith(".jar"));
-        List<String[]> items = new ArrayList<>();
-        if(modFiles != null) {
-            for(File f : modFiles) {
-                items.add(new String[]{f.getName(), humanReadableSize(f.length())});
+        List<ModEntry> entries = new ArrayList<>();
+
+        File[] allFiles = modsDir.listFiles();
+        if(allFiles != null) {
+            for(File f : allFiles) {
+                String name = f.getName();
+                boolean enabled = !name.endsWith(".disabled");
+                String realName = name.replaceAll("\\.disabled$", "");
+                if(!realName.endsWith(".jar")) continue;
+
+                ModMetadata meta = readModMetadata(f);
+                entries.add(new ModEntry(realName,
+                        meta != null ? meta.name : null,
+                        meta != null ? meta.description : null,
+                        meta != null ? meta.author : null,
+                        enabled));
             }
         }
-        mModsList.setAdapter(new FileListAdapter(requireContext(), items));
+
+        mModsList.setAdapter(new FileListAdapter(LayoutInflater.from(requireContext()), entries,
+                (position, isChecked) -> toggleMod(entries.get(position))));
     }
 
     private void loadResourcePacksList() {
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
         File rpDir = new File(gameDir, "resourcepacks");
-        File[] rpFiles = rpDir.listFiles((dir, name) -> name.endsWith(".zip"));
-        List<String[]> items = new ArrayList<>();
-        if(rpFiles != null) {
-            for(File f : rpFiles) {
-                items.add(new String[]{f.getName(), humanReadableSize(f.length())});
+        List<ResourcePackEntry> entries = new ArrayList<>();
+
+        File[] allFiles = rpDir.listFiles();
+        if(allFiles != null) {
+            for(File f : allFiles) {
+                String name = f.getName();
+                boolean enabled = !name.endsWith(".disabled");
+                String realName = name.replaceAll("\\.disabled$", "");
+                if(!realName.endsWith(".zip")) continue;
+
+                PackMeta meta = readPackMeta(f);
+                entries.add(new ResourcePackEntry(realName,
+                        meta != null ? meta.name : null,
+                        meta != null ? meta.description : null,
+                        meta != null ? meta.format : 0,
+                        enabled));
             }
         }
-        mResourcePacksList.setAdapter(new FileListAdapter(requireContext(), items));
+
+        mResourcePacksList.setAdapter(new FileListAdapter(LayoutInflater.from(requireContext()), entries,
+                (position, isChecked) -> toggleResourcePack(entries.get(position))));
+    }
+
+    private void toggleMod(ModEntry entry) {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File modsDir = new File(gameDir, "mods");
+        File source = new File(modsDir, entry.enabled ? entry.fileName : entry.fileName + ".disabled");
+        File target = new File(modsDir, entry.enabled ? entry.fileName + ".disabled" : entry.fileName);
+        if(source.renameTo(target)) {
+            loadModsList();
+        }
+    }
+
+    private void toggleResourcePack(ResourcePackEntry entry) {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File rpDir = new File(gameDir, "resourcepacks");
+        File source = new File(rpDir, entry.enabled ? entry.fileName : entry.fileName + ".disabled");
+        File target = new File(rpDir, entry.enabled ? entry.fileName + ".disabled" : entry.fileName);
+        if(source.renameTo(target)) {
+            loadResourcePacksList();
+        }
+    }
+
+    private static class ModMetadata {
+        String name, description, author;
+    }
+
+    private static class PackMeta {
+        String name, description;
+        int format;
+    }
+
+    private ModMetadata readModMetadata(File file) {
+        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(file)) {
+            java.util.zip.ZipEntry entry = zip.getEntry("fabric.mod.json");
+            if(entry != null) {
+                java.util.Scanner scanner = new java.util.Scanner(zip.getInputStream(entry)).useDelimiter("\\A");
+                String json = scanner.hasNext() ? scanner.next() : "";
+                scanner.close();
+                com.google.gson.JsonObject obj = new com.google.gson.JsonParser().parse(json).getAsJsonObject();
+                ModMetadata meta = new ModMetadata();
+                if(obj.has("name")) meta.name = obj.get("name").getAsString();
+                if(obj.has("description")) meta.description = obj.get("description").getAsString();
+                if(obj.has("authors")) {
+                    try { meta.author = obj.get("authors").getAsJsonArray().get(0).getAsString(); }
+                    catch(Exception ignored) { meta.author = obj.get("authors").getAsString(); }
+                }
+                return meta;
+            }
+            entry = zip.getEntry("mcmod.info");
+            if(entry != null) {
+                java.util.Scanner scanner = new java.util.Scanner(zip.getInputStream(entry)).useDelimiter("\\A");
+                String json = scanner.hasNext() ? scanner.next() : "";
+                scanner.close();
+                com.google.gson.JsonArray arr = new com.google.gson.JsonParser().parse(json).getAsJsonArray();
+                if(arr.size() > 0) {
+                    com.google.gson.JsonObject obj = arr.get(0).getAsJsonObject();
+                    ModMetadata meta = new ModMetadata();
+                    if(obj.has("name")) meta.name = obj.get("name").getAsString();
+                    if(obj.has("description")) meta.description = obj.get("description").getAsString();
+                    if(obj.has("author")) meta.author = obj.get("author").getAsString();
+                    return meta;
+                }
+            }
+        } catch(Exception ignored) {}
+        return null;
+    }
+
+    private PackMeta readPackMeta(File file) {
+        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(file)) {
+            java.util.zip.ZipEntry entry = zip.getEntry("pack.mcmeta");
+            if(entry != null) {
+                java.util.Scanner scanner = new java.util.Scanner(zip.getInputStream(entry)).useDelimiter("\\A");
+                String json = scanner.hasNext() ? scanner.next() : "";
+                scanner.close();
+                com.google.gson.JsonObject obj = new com.google.gson.JsonParser().parse(json).getAsJsonObject();
+                com.google.gson.JsonObject pack = obj.getAsJsonObject("pack");
+                if(pack != null) {
+                    PackMeta meta = new PackMeta();
+                    if(pack.has("pack_format")) meta.format = pack.get("pack_format").getAsInt();
+                    if(pack.has("description")) {
+                        try { meta.description = pack.get("description").getAsString(); }
+                        catch(Exception e) { meta.description = pack.get("description").toString(); }
+                    }
+                    return meta;
+                }
+            }
+        } catch(Exception ignored) {}
+        return null;
     }
 
     private String humanReadableSize(long bytes) {
