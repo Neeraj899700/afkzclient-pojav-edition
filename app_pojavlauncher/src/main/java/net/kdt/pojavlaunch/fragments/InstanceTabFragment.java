@@ -2,11 +2,11 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,10 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import net.kdt.pojavlaunch.Tools;
 import git.artdeell.mojo.R;
 import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.instances.Instances;
+import net.kdt.pojavlaunch.multirt.MultiRTUtils;
+import net.kdt.pojavlaunch.multirt.RTSpinnerAdapter;
+import net.kdt.pojavlaunch.multirt.Runtime;
+import net.kdt.pojavlaunch.profiles.VersionSelectorDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +33,19 @@ public class InstanceTabFragment extends Fragment {
     public static final String TAG = "InstanceTabFragment";
 
     private TextView mInstanceSelector;
-    private Button mTabMeta, mTabMods, mTabResourcePacks;
+    private TextView mTabMeta, mTabMods, mTabResourcePacks;
     private ScrollView mMetaContent;
     private ListView mModsList, mResourcePacksList;
 
-    private TextView mMetaName, mMetaVersion, mMetaRuntime, mMetaRenderer, mMetaJvm, mMetaControl;
+    private EditText mEditorName;
+    private TextView mEditorVersion;
+    private Spinner mEditorRuntime;
+    private EditText mEditorJvmArgs;
+    private Button mEditorSave;
 
     private List<Instance> mInstances;
     private Instance mCurrentInstance;
+    private RTSpinnerAdapter mRuntimeAdapter;
 
     public InstanceTabFragment() {
         super(R.layout.fragment_instance_tab);
@@ -53,12 +61,11 @@ public class InstanceTabFragment extends Fragment {
         mModsList = view.findViewById(R.id.mods_list);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
 
-        mMetaName = view.findViewById(R.id.meta_name);
-        mMetaVersion = view.findViewById(R.id.meta_version);
-        mMetaRuntime = view.findViewById(R.id.meta_runtime);
-        mMetaRenderer = view.findViewById(R.id.meta_renderer);
-        mMetaJvm = view.findViewById(R.id.meta_jvm);
-        mMetaControl = view.findViewById(R.id.meta_control);
+        mEditorName = view.findViewById(R.id.editor_name);
+        mEditorVersion = view.findViewById(R.id.editor_version);
+        mEditorRuntime = view.findViewById(R.id.editor_runtime);
+        mEditorJvmArgs = view.findViewById(R.id.editor_jvm_args);
+        mEditorSave = view.findViewById(R.id.editor_save);
 
         loadInstances();
 
@@ -68,10 +75,29 @@ public class InstanceTabFragment extends Fragment {
         mTabMods.setOnClickListener(v -> showTab(1));
         mTabResourcePacks.setOnClickListener(v -> showTab(2));
 
+        mEditorVersion.setOnClickListener(v -> {
+            if(mCurrentInstance != null) {
+                VersionSelectorDialog.open(requireActivity(), mCurrentInstance.versionId, version -> {
+                    mCurrentInstance.versionId = version;
+                    mEditorVersion.setText(version);
+                });
+            }
+        });
+
+        mEditorSave.setOnClickListener(v -> saveInstance());
+
+        setupRuntimeSpinner();
+
         if(!mInstances.isEmpty()) {
             selectInstance(mInstances.get(0));
         }
         showTab(0);
+    }
+
+    private void setupRuntimeSpinner() {
+        List<Runtime> runtimes = MultiRTUtils.getRuntimes();
+        mRuntimeAdapter = new RTSpinnerAdapter(requireContext(), runtimes);
+        mEditorRuntime.setAdapter(mRuntimeAdapter);
     }
 
     private void loadInstances() {
@@ -103,17 +129,44 @@ public class InstanceTabFragment extends Fragment {
         Instances.setSelectedInstance(instance);
         String displayName = instance.name != null ? instance.name : "Unnamed";
         mInstanceSelector.setText(displayName);
-        updateMetaView();
+        populateEditor();
     }
 
-    private void updateMetaView() {
+    private void populateEditor() {
         if(mCurrentInstance == null) return;
-        mMetaName.setText(mCurrentInstance.name != null ? mCurrentInstance.name : "Unnamed");
-        mMetaVersion.setText(mCurrentInstance.versionId != null ? mCurrentInstance.versionId : "Not set");
-        mMetaRuntime.setText(mCurrentInstance.selectedRuntime != null ? mCurrentInstance.selectedRuntime : "Default");
-        mMetaRenderer.setText(mCurrentInstance.renderer != null ? mCurrentInstance.renderer : "Default");
-        mMetaJvm.setText(mCurrentInstance.jvmArgs != null ? mCurrentInstance.jvmArgs : "Default");
-        mMetaControl.setText(mCurrentInstance.controlLayout != null ? mCurrentInstance.controlLayout : "Default");
+        mEditorName.setText(mCurrentInstance.name != null ? mCurrentInstance.name : "");
+        mEditorVersion.setText(mCurrentInstance.versionId != null ? mCurrentInstance.versionId : "Not set");
+        mEditorJvmArgs.setText(mCurrentInstance.jvmArgs != null ? mCurrentInstance.jvmArgs : "");
+
+        if(mRuntimeAdapter != null) {
+            String selectedRuntime = mCurrentInstance.selectedRuntime;
+            for(int i = 0; i < mRuntimeAdapter.getCount(); i++) {
+                Runtime rt = (Runtime) mRuntimeAdapter.getItem(i);
+                if(rt.name.equals(selectedRuntime)) {
+                    mEditorRuntime.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void saveInstance() {
+        if(mCurrentInstance == null) return;
+        String name = mEditorName.getText().toString().trim();
+        if(!name.isEmpty()) mCurrentInstance.name = name;
+        String jvmArgs = mEditorJvmArgs.getText().toString().trim();
+        mCurrentInstance.jvmArgs = !jvmArgs.isEmpty() ? jvmArgs : null;
+        if(mEditorRuntime.getSelectedItem() instanceof Runtime) {
+            Runtime rt = (Runtime) mEditorRuntime.getSelectedItem();
+            mCurrentInstance.selectedRuntime = rt.name;
+        }
+        try {
+            mCurrentInstance.write();
+            Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show();
+            mInstanceSelector.setText(mCurrentInstance.name != null ? mCurrentInstance.name : "Unnamed");
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showTab(int tab) {
@@ -121,9 +174,11 @@ public class InstanceTabFragment extends Fragment {
         mModsList.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
         mResourcePacksList.setVisibility(tab == 2 ? View.VISIBLE : View.GONE);
 
-        mTabMeta.setSelected(tab == 0);
-        mTabMods.setSelected(tab == 1);
-        mTabResourcePacks.setSelected(tab == 2);
+        int green = 0xFF57CC33;
+        int white = 0xFFFFFFFF;
+        mTabMeta.setTextColor(tab == 0 ? green : white);
+        mTabMods.setTextColor(tab == 1 ? green : white);
+        mTabResourcePacks.setTextColor(tab == 2 ? green : white);
 
         if(tab == 1) loadModsList();
         else if(tab == 2) loadResourcePacksList();
