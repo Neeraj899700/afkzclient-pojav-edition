@@ -609,7 +609,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 (position, isChecked) -> {
                     Object item = mModsAdapter.getItem(position);
                     if(item instanceof ModEntry) toggleMod((ModEntry) item);
-                });
+                }, true);
         mModsList.setAdapter(mModsAdapter);
     }
 
@@ -647,10 +647,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 + " (" + active + " active" + (inactive > 0 ? ", " + inactive + " inactive" : "") + ")");
 
         mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
-                (position, isChecked) -> {
-                    Object item = mResourcePacksAdapter.getItem(position);
-                    if(item instanceof ResourcePackEntry) toggleResourcePack((ResourcePackEntry) item);
-                });
+                null, false);
         mResourcePacksList.setAdapter(mResourcePacksAdapter);
     }
 

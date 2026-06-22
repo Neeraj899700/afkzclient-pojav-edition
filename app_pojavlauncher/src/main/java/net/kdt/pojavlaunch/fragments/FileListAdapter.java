@@ -2,6 +2,7 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +28,26 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
         void onToggle(int position, boolean isChecked);
     }
 
+    private static final int COLOR_MOD = 0xFF57CC33;
+    private static final int COLOR_PACK = 0xFF3388CC;
+
     private final List<?> mItems;
     private List<?> mFilteredItems;
     private final LayoutInflater mInflater;
     private final ToggleListener mToggleListener;
+    private final boolean mShowToggle;
     private String mFilter;
 
     public FileListAdapter(LayoutInflater inflater, List<?> items, ToggleListener listener) {
+        this(inflater, items, listener, true);
+    }
+
+    public FileListAdapter(LayoutInflater inflater, List<?> items, ToggleListener listener, boolean showToggle) {
         mInflater = inflater;
         mItems = items;
         mFilteredItems = items;
         mToggleListener = listener;
+        mShowToggle = showToggle;
     }
 
     public void filter(String query) {
@@ -112,8 +122,17 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             desc = mod.description != null && !mod.description.isEmpty() ? mod.description : parts;
             if(!mod.enabled) desc = "DISABLED - " + desc;
             enabled = mod.enabled;
-            iconText.setText("🔧");
+            iconText.setText("M");
+            iconText.setTextColor(0xFFFFFFFF);
+            iconText.setBackgroundTintList(null);
+            iconText.setBackgroundResource(android.R.color.transparent);
+            GradientDrawable modBg = new GradientDrawable();
+            modBg.setShape(GradientDrawable.OVAL);
+            modBg.setSize(36, 36);
+            modBg.setColor(COLOR_MOD);
+            iconText.setBackground(modBg);
             iconImage.setVisibility(View.GONE);
+            toggle.setVisibility(mShowToggle ? View.VISIBLE : View.GONE);
         } else if(item instanceof ResourcePackEntry) {
             ResourcePackEntry rp = (ResourcePackEntry) item;
             name = rp.displayName != null ? rp.displayName : rp.fileName;
@@ -131,8 +150,16 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             } else {
                 iconText.setVisibility(View.VISIBLE);
                 iconImage.setVisibility(View.GONE);
-                iconText.setText("🎨");
+                iconText.setText("R");
+                iconText.setTextColor(0xFFFFFFFF);
+                iconText.setBackgroundResource(android.R.color.transparent);
+                GradientDrawable rpBg = new GradientDrawable();
+                rpBg.setShape(GradientDrawable.OVAL);
+                rpBg.setSize(36, 36);
+                rpBg.setColor(COLOR_PACK);
+                iconText.setBackground(rpBg);
             }
+            toggle.setVisibility(View.GONE);
         }
 
         nameView.setText(name);
