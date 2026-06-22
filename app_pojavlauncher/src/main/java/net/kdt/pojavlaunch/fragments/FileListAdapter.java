@@ -124,14 +124,22 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             enabled = mod.enabled;
             iconText.setText("M");
             iconText.setTextColor(0xFFFFFFFF);
-            iconText.setVisibility(View.VISIBLE);
-            iconText.setBackgroundResource(android.R.color.transparent);
-            GradientDrawable modBg = new GradientDrawable();
-            modBg.setShape(GradientDrawable.OVAL);
-            modBg.setSize(36, 36);
-            modBg.setColor(COLOR_MOD);
-            iconText.setBackground(modBg);
-            iconImage.setVisibility(View.GONE);
+            iconText.setVisibility(View.GONE);
+            iconImage.setVisibility(View.VISIBLE);
+
+            Bitmap modIcon = loadModIcon(mod.file);
+            if(modIcon != null) {
+                iconImage.setImageBitmap(modIcon);
+            } else {
+                iconText.setVisibility(View.VISIBLE);
+                iconImage.setVisibility(View.GONE);
+                iconText.setBackgroundResource(android.R.color.transparent);
+                GradientDrawable modBg = new GradientDrawable();
+                modBg.setShape(GradientDrawable.OVAL);
+                modBg.setSize(36, 36);
+                modBg.setColor(COLOR_MOD);
+                iconText.setBackground(modBg);
+            }
             toggle.setVisibility(mShowToggle ? View.VISIBLE : View.GONE);
         } else if(item instanceof ResourcePackEntry) {
             ResourcePackEntry rp = (ResourcePackEntry) item;
@@ -184,6 +192,27 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
                     if(bitmap != null) {
                         int size = (int) (36 * mInflater.getContext().getResources().getDisplayMetrics().density);
                         return Bitmap.createScaledBitmap(bitmap, size, size, true);
+                    }
+                }
+            }
+        } catch(Exception ignored) {}
+        return null;
+    }
+
+    private Bitmap loadModIcon(java.io.File jarFile) {
+        if(jarFile == null || !jarFile.exists()) return null;
+        try (ZipFile zip = new ZipFile(jarFile)) {
+            // Try pack.png first (common in Fabric mods), then logo.png
+            String[] candidates = {"pack.png", "logo.png", "assets/logo.png", "icon.png"};
+            for(String path : candidates) {
+                ZipEntry entry = zip.getEntry(path);
+                if(entry != null) {
+                    try (InputStream is = zip.getInputStream(entry)) {
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        if(bitmap != null) {
+                            int size = (int) (36 * mInflater.getContext().getResources().getDisplayMetrics().density);
+                            return Bitmap.createScaledBitmap(bitmap, size, size, true);
+                        }
                     }
                 }
             }

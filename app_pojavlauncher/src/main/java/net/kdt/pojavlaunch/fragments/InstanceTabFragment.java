@@ -597,7 +597,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                         meta != null ? meta.description : null,
                         meta != null ? meta.author : null,
                         meta != null ? meta.version : null,
-                        isEnabled));
+                        isEnabled, f));
             }
         }
 
