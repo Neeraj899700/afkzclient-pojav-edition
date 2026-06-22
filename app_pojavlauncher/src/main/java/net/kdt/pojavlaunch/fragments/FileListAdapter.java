@@ -127,7 +127,7 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             iconText.setVisibility(View.GONE);
             iconImage.setVisibility(View.VISIBLE);
 
-            Bitmap modIcon = loadModIcon(mod.file);
+            Bitmap modIcon = loadModIcon(mod.file, mod.iconPath);
             if(modIcon != null) {
                 iconImage.setImageBitmap(modIcon);
             } else {
@@ -199,10 +199,23 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
         return null;
     }
 
-    private Bitmap loadModIcon(java.io.File jarFile) {
+    private Bitmap loadModIcon(java.io.File jarFile, String iconPath) {
         if(jarFile == null || !jarFile.exists()) return null;
         try (ZipFile zip = new ZipFile(jarFile)) {
-            // Try pack.png first (common in Fabric mods), then logo.png
+            // Try the icon path from fabric.mod.json first
+            if(iconPath != null) {
+                ZipEntry entry = zip.getEntry(iconPath);
+                if(entry != null) {
+                    try (InputStream is = zip.getInputStream(entry)) {
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        if(bitmap != null) {
+                            int size = (int) (36 * mInflater.getContext().getResources().getDisplayMetrics().density);
+                            return Bitmap.createScaledBitmap(bitmap, size, size, true);
+                        }
+                    }
+                }
+            }
+            // Fallbacks
             String[] candidates = {"pack.png", "logo.png", "assets/logo.png", "icon.png"};
             for(String path : candidates) {
                 ZipEntry entry = zip.getEntry(path);

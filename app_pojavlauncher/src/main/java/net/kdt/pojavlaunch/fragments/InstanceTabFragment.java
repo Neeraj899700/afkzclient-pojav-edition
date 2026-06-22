@@ -597,7 +597,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                         meta != null ? meta.description : null,
                         meta != null ? meta.author : null,
                         meta != null ? meta.version : null,
-                        isEnabled, f));
+                        isEnabled, f,
+                        meta != null ? meta.iconPath : null));
             }
         }
 
@@ -760,7 +761,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     }
 
     private static class ModMetadata {
-        String name, description, author, version;
+        String name, description, author, version, iconPath;
     }
 
     private static class PackMeta {
@@ -780,6 +781,34 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 if(obj.has("name")) meta.name = obj.get("name").getAsString();
                 if(obj.has("description")) meta.description = obj.get("description").getAsString();
                 if(obj.has("version")) meta.version = obj.get("version").getAsString();
+                if(obj.has("icon")) {
+                    com.google.gson.JsonElement iconEl = obj.get("icon");
+                    if(iconEl.isJsonObject()) {
+                        // Pick the smallest icon 64 or larger
+                        com.google.gson.JsonObject iconObj = iconEl.getAsJsonObject();
+                        String bestPath = null;
+                        int bestSize = Integer.MAX_VALUE;
+                        for(String key : iconObj.keySet()) {
+                            try {
+                                int size = Integer.parseInt(key);
+                                if(size >= 64 && size < bestSize) {
+                                    bestSize = size;
+                                    bestPath = iconObj.get(key).getAsString();
+                                }
+                            } catch(NumberFormatException ignored) {}
+                        }
+                        if(bestPath == null) {
+                            // fallback: any key
+                            for(String key : iconObj.keySet()) {
+                                bestPath = iconObj.get(key).getAsString();
+                                break;
+                            }
+                        }
+                        meta.iconPath = bestPath;
+                    } else {
+                        meta.iconPath = iconEl.getAsString();
+                    }
+                }
                 if(obj.has("authors")) {
                     try { meta.author = obj.get("authors").getAsJsonArray().get(0).getAsString(); }
                     catch(Exception ignored) { meta.author = obj.get("authors").getAsString(); }
