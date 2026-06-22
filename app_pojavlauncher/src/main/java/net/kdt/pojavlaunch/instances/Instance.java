@@ -28,6 +28,9 @@ public class Instance extends DisplayInstance {
     public String selectedRuntime;
     public String controlLayout;
     public boolean sharedData;
+    public long lastPlayed;
+    public String accountUUID;
+    public int resolutionWidth, resolutionHeight;
 
     protected Instance() {
     }

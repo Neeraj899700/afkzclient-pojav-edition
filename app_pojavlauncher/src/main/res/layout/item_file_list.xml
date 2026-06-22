@@ -7,18 +7,32 @@
     android:layout_marginBottom="@dimen/_4sdp"
     android:padding="@dimen/_8sdp">
 
-    <TextView
-        android:id="@+id/file_icon"
+    <FrameLayout
         android:layout_width="@dimen/_36sdp"
-        android:layout_height="@dimen/_36sdp"
-        android:gravity="center"
-        android:textSize="@dimen/_18ssp" />
+        android:layout_height="@dimen/_36sdp">
+
+        <TextView
+            android:id="@+id/file_icon_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/_18ssp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/file_icon_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:visibility="visible" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
         android:orientation="vertical">
 
         <TextView
@@ -41,7 +55,6 @@
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/file_toggle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_6sdp" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

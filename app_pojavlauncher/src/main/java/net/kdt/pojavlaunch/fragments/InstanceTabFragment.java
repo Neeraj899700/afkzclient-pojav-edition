@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -26,6 +30,8 @@ import androidx.fragment.app.Fragment;
 
 import git.artdeell.mojo.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
+import net.kdt.pojavlaunch.authenticator.accounts.MinecraftAccount;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.instances.Instance;
@@ -36,19 +42,24 @@ import net.kdt.pojavlaunch.multirt.RTSpinnerAdapter;
 import net.kdt.pojavlaunch.multirt.Runtime;
 import net.kdt.pojavlaunch.profiles.VersionSelectorDialog;
 import net.kdt.pojavlaunch.utils.CropperUtils;
+import net.kdt.pojavlaunch.utils.FileUtils;
+import net.kdt.pojavlaunch.utils.JSONUtils;
 import net.kdt.pojavlaunch.utils.RendererCompatUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipFile;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
-import java.util.Scanner;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import java.util.zip.ZipFile;
 
 public class InstanceTabFragment extends Fragment implements CropperUtils.CropperReceiver {
 
@@ -60,6 +71,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private LinearLayout mModsContainer, mResourcePacksContainer;
     private ListView mModsList, mResourcePacksList;
     private TextView mModsHeader;
+    private EditText mModsSearch, mResourcePacksSearch;
 
     private ImageView mInstanceIcon;
     private EditText mEditorName;
@@ -72,14 +84,26 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private Button mEditorControlButton;
     private CheckBox mEditorSharedData;
     private TextView mEditorDiskUsage;
+    private TextView mEditorLastPlayed;
+    private EditText mEditorResWidth, mEditorResHeight;
+    private Spinner mEditorAccount;
     private Button mEditorSave;
     private Button mEditorDelete;
     private Button mEditorOpenDir;
+    private Button mEditorDuplicate;
+    private Button mEditorExport;
+    private Button mEditorOpenScreenshots;
+    private TextView mEditorScreenshotsInfo;
 
     private List<Instance> mInstances;
     private Instance mCurrentInstance;
     private List<String> mRenderNames;
     private int mRecommendedIconSize;
+    private FileListAdapter mModsAdapter, mResourcePacksAdapter;
+    private List<ModEntry> mModEntries;
+    private List<ResourcePackEntry> mResourcePackEntries;
+    private List<MinecraftAccount> mAccounts;
+    private boolean mAccountsLoaded;
     private final ActivityResultLauncher<?> mCropperLauncher = CropperUtils.registerCropper(this, this);
 
     public InstanceTabFragment() {
@@ -96,8 +120,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mModsContainer = view.findViewById(R.id.mods_container);
         mModsList = view.findViewById(R.id.mods_list);
         mModsHeader = view.findViewById(R.id.mods_header);
+        mModsSearch = view.findViewById(R.id.mods_search);
         mResourcePacksContainer = view.findViewById(R.id.resourcepacks_container);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
+        mResourcePacksSearch = view.findViewById(R.id.resourcepacks_search);
 
         mInstanceIcon = view.findViewById(R.id.editor_icon);
         mEditorName = view.findViewById(R.id.editor_name);
@@ -110,17 +136,31 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorControlButton = view.findViewById(R.id.editor_control_button);
         mEditorSharedData = view.findViewById(R.id.editor_shared_data);
         mEditorDiskUsage = view.findViewById(R.id.editor_disk_usage);
+        mEditorLastPlayed = view.findViewById(R.id.editor_last_played);
+        mEditorResWidth = view.findViewById(R.id.editor_res_width);
+        mEditorResHeight = view.findViewById(R.id.editor_res_height);
+        mEditorAccount = view.findViewById(R.id.editor_account);
         mEditorSave = view.findViewById(R.id.editor_save);
         mEditorDelete = view.findViewById(R.id.editor_delete);
         mEditorOpenDir = view.findViewById(R.id.editor_open_dir);
+        mEditorDuplicate = view.findViewById(R.id.editor_duplicate);
+        mEditorExport = view.findViewById(R.id.editor_export);
+        mEditorOpenScreenshots = view.findViewById(R.id.editor_open_screenshots);
+        mEditorScreenshotsInfo = view.findViewById(R.id.editor_screenshots_info);
 
         loadInstances();
 
         mInstanceSelector.setOnClickListener(v -> showInstanceSelector());
 
         mTabMeta.setOnClickListener(v -> showTab(0));
-        mTabMods.setOnClickListener(v -> showTab(1));
-        mTabResourcePacks.setOnClickListener(v -> showTab(2));
+        mTabMods.setOnClickListener(v -> {
+            showTab(1);
+            if(mModsAdapter != null) mModsAdapter.filter(mModsSearch.getText().toString());
+        });
+        mTabResourcePacks.setOnClickListener(v -> {
+            showTab(2);
+            if(mResourcePacksAdapter != null) mResourcePacksAdapter.filter(mResourcePacksSearch.getText().toString());
+        });
 
         setupVersionSelector();
         setupControlSelector();
@@ -128,6 +168,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         setupSharedData();
         setupIcon();
         setupSaveDelete();
+        setupSearch();
+        setupDuplicateExport();
+        setupScreenshots();
+        loadAccounts();
 
         if(!mInstances.isEmpty()) {
             selectInstance(mInstances.get(0));
@@ -191,6 +235,52 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorOpenDir.setOnClickListener(v -> openGameDirectory());
     }
 
+    private void setupSearch() {
+        TextWatcher watcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString();
+                if(mModsAdapter != null && mModsSearch.isFocused()) {
+                    mModsAdapter.filter(query);
+                }
+                if(mResourcePacksAdapter != null && mResourcePacksSearch.isFocused()) {
+                    mResourcePacksAdapter.filter(query);
+                }
+            }
+        };
+        mModsSearch.addTextChangedListener(watcher);
+        mResourcePacksSearch.addTextChangedListener(watcher);
+    }
+
+    private void setupDuplicateExport() {
+        mEditorDuplicate.setOnClickListener(v -> duplicateProfile());
+        mEditorExport.setOnClickListener(v -> exportProfile());
+    }
+
+    private void setupScreenshots() {
+        mEditorOpenScreenshots.setOnClickListener(v -> openScreenshots());
+    }
+
+    private void loadAccounts() {
+        try {
+            Accounts accounts = Accounts.load();
+            mAccounts = new ArrayList<>(accounts.accounts);
+        } catch (IOException e) {
+            mAccounts = new ArrayList<>();
+        }
+        List<String> names = new ArrayList<>();
+        names.add("Default (global)");
+        for(MinecraftAccount acc : mAccounts) {
+            names.add(acc.username);
+        }
+        mEditorAccount.setAdapter(new ArrayAdapter<>(requireContext(),
+                R.layout.item_simple_list_1, names));
+        mAccountsLoaded = true;
+    }
+
     private void loadInstances() {
         try {
             mInstances = Instances.loadAllInstances();
@@ -235,6 +325,26 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorSharedData.setChecked(mCurrentInstance.sharedData);
 
         updateDiskUsage();
+        updateLastPlayed();
+        updateScreenshotsInfo();
+
+        mEditorResWidth.setText(mCurrentInstance.resolutionWidth > 0 ? String.valueOf(mCurrentInstance.resolutionWidth) : "");
+        mEditorResHeight.setText(mCurrentInstance.resolutionHeight > 0 ? String.valueOf(mCurrentInstance.resolutionHeight) : "");
+
+        // Account spinner
+        if(mAccountsLoaded && mAccounts != null) {
+            int accIdx = 0; // Default
+            if(mCurrentInstance.accountUUID != null) {
+                for(int i = 0; i < mAccounts.size(); i++) {
+                    if(mAccounts.get(i).profileId.equals(mCurrentInstance.accountUUID)) {
+                        accIdx = i + 1;
+                        break;
+                    }
+                }
+            }
+            final int idx = accIdx;
+            mEditorAccount.setSelection(idx);
+        }
 
         String value = (String) ExtraCore.consumeValue(ExtraConstants.FILE_SELECTOR);
         if(value != null) {
@@ -278,6 +388,26 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             mCurrentInstance.renderer = mRenderNames.get(mEditorRenderer.getSelectedItemPosition());
         }
 
+        // Resolution
+        try {
+            int w = Integer.parseInt(mEditorResWidth.getText().toString());
+            mCurrentInstance.resolutionWidth = Math.max(0, w);
+        } catch(NumberFormatException e) { mCurrentInstance.resolutionWidth = 0; }
+        try {
+            int h = Integer.parseInt(mEditorResHeight.getText().toString());
+            mCurrentInstance.resolutionHeight = Math.max(0, h);
+        } catch(NumberFormatException e) { mCurrentInstance.resolutionHeight = 0; }
+
+        // Account
+        int accPos = mEditorAccount.getSelectedItemPosition();
+        if(accPos > 0 && accPos - 1 < mAccounts.size()) {
+            mCurrentInstance.accountUUID = mAccounts.get(accPos - 1).profileId;
+        } else {
+            mCurrentInstance.accountUUID = null;
+        }
+
+        mCurrentInstance.lastPlayed = System.currentTimeMillis();
+
         try {
             mCurrentInstance.write();
             Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show();
@@ -286,6 +416,139 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             mInstanceSelector.setText(displayName);
         } catch (IOException e) {
             Toast.makeText(requireContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void duplicateProfile() {
+        if(mCurrentInstance == null) return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Duplicate Profile");
+        final EditText input = new EditText(requireContext());
+        input.setHint("New profile name");
+        input.setText(mCurrentInstance.name + " (Copy)");
+        builder.setView(input);
+        builder.setPositiveButton("Duplicate", (dialog, which) -> {
+            String newName = input.getText().toString().trim();
+            if(newName.isEmpty()) {
+                Toast.makeText(requireContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                final String copyName = newName;
+                final Instance src = mCurrentInstance;
+                Instance newInstance = Instances.createInstance(setter -> {
+                    setter.name = copyName;
+                    setter.versionId = src.versionId;
+                    setter.selectedRuntime = src.selectedRuntime;
+                    setter.renderer = src.renderer;
+                    setter.jvmArgs = src.jvmArgs;
+                    setter.controlLayout = src.controlLayout;
+                    setter.sharedData = src.sharedData;
+                    setter.resolutionWidth = src.resolutionWidth;
+                    setter.resolutionHeight = src.resolutionHeight;
+                    setter.accountUUID = src.accountUUID;
+                }, null);
+
+                // Copy icon
+                File srcIcon = new File(src.mInstanceRoot, "icon.webp");
+                if(srcIcon.exists()) {
+                    File dstIcon = new File(newInstance.mInstanceRoot, "icon.webp");
+                    try (FileInputStream fis = new FileInputStream(srcIcon);
+                         FileOutputStream fos = new FileOutputStream(dstIcon)) {
+                        byte[] buf = new byte[4096];
+                        int n;
+                        while((n = fis.read(buf)) > 0) fos.write(buf, 0, n);
+                    } catch(Exception ignored) {}
+                }
+
+                Instances.setSelectedInstance(newInstance);
+                Toast.makeText(requireContext(), "Profile duplicated", Toast.LENGTH_SHORT).show();
+
+                // Reload and select
+                loadInstances();
+                for(Instance inst : mInstances) {
+                    if(inst.mInstanceRoot.equals(newInstance.mInstanceRoot)) {
+                        selectInstance(inst);
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                Toast.makeText(requireContext(), "Duplicate failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    private void exportProfile() {
+        if(mCurrentInstance == null) return;
+        String name = mCurrentInstance.name != null ? mCurrentInstance.name : "Unnamed";
+        try {
+            File exportsDir = new File(Tools.DIR_GAME_HOME, "exports");
+            FileUtils.ensureDirectory(exportsDir);
+            File exportFile = new File(exportsDir, name + ".json");
+            JSONUtils.writeToFile(exportFile, mCurrentInstance);
+            Toast.makeText(requireContext(), "Exported to " + exportFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void updateDiskUsage() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        new Thread(() -> {
+            long size = folderSize(gameDir);
+            String human = humanReadableSize(size);
+            requireActivity().runOnUiThread(() ->
+                    mEditorDiskUsage.setText(human));
+        }).start();
+    }
+
+    private void updateLastPlayed() {
+        if(mCurrentInstance == null) return;
+        if(mCurrentInstance.lastPlayed > 0) {
+            String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+                    .format(new Date(mCurrentInstance.lastPlayed));
+            mEditorLastPlayed.setText(date);
+        } else {
+            mEditorLastPlayed.setText("Never");
+        }
+    }
+
+    private void updateScreenshotsInfo() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File screenshotsDir = new File(gameDir, "screenshots");
+        if(screenshotsDir.exists()) {
+            File[] shots = screenshotsDir.listFiles((dir, name) ->
+                    name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"));
+            if(shots != null && shots.length > 0) {
+                mEditorScreenshotsInfo.setText(shots.length + " screenshot" + (shots.length != 1 ? "s" : ""));
+                return;
+            }
+        }
+        mEditorScreenshotsInfo.setText("No screenshots");
+    }
+
+    private void openScreenshots() {
+        if(mCurrentInstance == null) return;
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File screenshotsDir = new File(gameDir, "screenshots");
+        if(!screenshotsDir.exists()) screenshotsDir.mkdirs();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(screenshotsDir), "resource/folder");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(intent);
+        } catch(Exception e) {
+            try {
+                Intent fallback = new Intent(Intent.ACTION_VIEW);
+                fallback.setDataAndType(Uri.fromFile(screenshotsDir), "*/*");
+                startActivity(fallback);
+            } catch(Exception e2) {
+                Toast.makeText(requireContext(), "No file manager found", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -312,7 +575,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
         File modsDir = new File(gameDir, "mods");
-        List<ModEntry> entries = new ArrayList<>();
+        mModEntries = new ArrayList<>();
 
         File[] allFiles = modsDir.listFiles();
         int total = 0, enabled = 0;
@@ -327,10 +590,11 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 if(isEnabled) enabled++;
 
                 ModMetadata meta = readModMetadata(f);
-                entries.add(new ModEntry(realName,
+                mModEntries.add(new ModEntry(realName,
                         meta != null ? meta.name : null,
                         meta != null ? meta.description : null,
                         meta != null ? meta.author : null,
+                        meta != null ? meta.version : null,
                         isEnabled));
             }
         }
@@ -339,15 +603,21 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mModsHeader.setText(total + " mod" + (total != 1 ? "s" : "") + " loaded"
                 + (disabled > 0 ? ", " + disabled + " disabled" : ""));
 
-        mModsList.setAdapter(new FileListAdapter(LayoutInflater.from(requireContext()), entries,
-                (position, isChecked) -> toggleMod(entries.get(position))));
+        mModsAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mModEntries,
+                (position, isChecked) -> {
+                    int pos = mModsList.getFirstVisiblePosition();
+                    if(pos >= 0 && pos < mModEntries.size()) {
+                        toggleMod(mModEntries.get(pos + (position - (mModsList.getFirstVisiblePosition()))));
+                    }
+                });
+        mModsList.setAdapter(mModsAdapter);
     }
 
     private void loadResourcePacksList() {
         if(mCurrentInstance == null) return;
         File gameDir = mCurrentInstance.getGameDirectory();
         File rpDir = new File(gameDir, "resourcepacks");
-        List<ResourcePackEntry> entries = new ArrayList<>();
+        mResourcePackEntries = new ArrayList<>();
 
         File[] allFiles = rpDir.listFiles();
         if(allFiles != null) {
@@ -358,16 +628,22 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 if(!realName.endsWith(".zip")) continue;
 
                 PackMeta meta = readPackMeta(f);
-                entries.add(new ResourcePackEntry(realName,
+                mResourcePackEntries.add(new ResourcePackEntry(realName,
                         meta != null ? meta.name : null,
                         meta != null ? meta.description : null,
                         meta != null ? meta.format : 0,
-                        enabled));
+                        enabled, f));
             }
         }
 
-        mResourcePacksList.setAdapter(new FileListAdapter(LayoutInflater.from(requireContext()), entries,
-                (position, isChecked) -> toggleResourcePack(entries.get(position))));
+        mResourcePacksAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mResourcePackEntries,
+                (position, isChecked) -> {
+                    int first = mResourcePacksList.getFirstVisiblePosition();
+                    if(first >= 0 && first < mResourcePackEntries.size()) {
+                        toggleResourcePack(mResourcePackEntries.get(first + (position - mResourcePacksList.getFirstVisiblePosition())));
+                    }
+                });
+        mResourcePacksList.setAdapter(mResourcePacksAdapter);
     }
 
     private void toggleMod(ModEntry entry) {
@@ -405,7 +681,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         try {
             startActivity(intent);
         } catch(Exception e) {
-            // Fallback: use DocumentsContract or just show a toast
             try {
                 Intent fallback = new Intent(Intent.ACTION_VIEW);
                 fallback.setDataAndType(Uri.fromFile(gameDir), "*/*");
@@ -414,17 +689,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 Toast.makeText(requireContext(), "No file manager found", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void updateDiskUsage() {
-        if(mCurrentInstance == null) return;
-        File gameDir = mCurrentInstance.getGameDirectory();
-        new Thread(() -> {
-            long size = folderSize(gameDir);
-            String human = humanReadableSize(size);
-            requireActivity().runOnUiThread(() ->
-                    mEditorDiskUsage.setText(human));
-        }).start();
     }
 
     private long folderSize(File dir) {
@@ -442,7 +706,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     }
 
     private static class ModMetadata {
-        String name, description, author;
+        String name, description, author, version;
     }
 
     private static class PackMeta {
@@ -451,8 +715,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     }
 
     private ModMetadata readModMetadata(File file) {
-        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(file)) {
-            java.util.zip.ZipEntry entry = zip.getEntry("fabric.mod.json");
+        try (ZipFile zip = new ZipFile(file)) {
+            ZipEntry entry = zip.getEntry("fabric.mod.json");
             if(entry != null) {
                 java.util.Scanner scanner = new java.util.Scanner(zip.getInputStream(entry)).useDelimiter("\\A");
                 String json = scanner.hasNext() ? scanner.next() : "";
@@ -461,6 +725,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 ModMetadata meta = new ModMetadata();
                 if(obj.has("name")) meta.name = obj.get("name").getAsString();
                 if(obj.has("description")) meta.description = obj.get("description").getAsString();
+                if(obj.has("version")) meta.version = obj.get("version").getAsString();
                 if(obj.has("authors")) {
                     try { meta.author = obj.get("authors").getAsJsonArray().get(0).getAsString(); }
                     catch(Exception ignored) { meta.author = obj.get("authors").getAsString(); }
@@ -478,6 +743,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                     ModMetadata meta = new ModMetadata();
                     if(obj.has("name")) meta.name = obj.get("name").getAsString();
                     if(obj.has("description")) meta.description = obj.get("description").getAsString();
+                    if(obj.has("version")) meta.version = obj.get("version").getAsString();
                     if(obj.has("author")) meta.author = obj.get("author").getAsString();
                     return meta;
                 }
@@ -487,8 +753,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     }
 
     private PackMeta readPackMeta(File file) {
-        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(file)) {
-            java.util.zip.ZipEntry entry = zip.getEntry("pack.mcmeta");
+        try (ZipFile zip = new ZipFile(file)) {
+            ZipEntry entry = zip.getEntry("pack.mcmeta");
             if(entry != null) {
                 java.util.Scanner scanner = new java.util.Scanner(zip.getInputStream(entry)).useDelimiter("\\A");
                 String json = scanner.hasNext() ? scanner.next() : "";

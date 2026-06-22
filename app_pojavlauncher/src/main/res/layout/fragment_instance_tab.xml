@@ -18,7 +18,7 @@
         android:textColor="@color/primary_text"
         android:text="@string/no_instance" />
 
-    <!-- Tab buttons (no background) -->
+    <!-- Tab buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:layout_weight="1"
         android:layout_marginTop="@dimen/_6sdp">
 
-        <!-- Meta content - premium card editor -->
+        <!-- Meta content -->
         <ScrollView
             android:id="@+id/meta_content"
             android:layout_width="match_parent"
@@ -195,6 +195,24 @@
                         android:textColor="@color/primary_text"
                         android:textSize="@dimen/_13ssp"
                         android:hint="Calculating..." />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Last Played"
+                        android:textColor="#888888"
+                        android:textSize="@dimen/_11ssp" />
+                    <TextView
+                        android:id="@+id/editor_last_played"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/background_line"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/_13ssp"
+                        android:hint="Never" />
                 </LinearLayout>
 
                 <!-- Runtime Card -->
@@ -335,6 +353,73 @@
                         android:text="Use shared data directory"
                         android:textColor="@color/primary_text"
                         android:button="@null" />
+
+                    <!-- Resolution override -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Resolution Override (0 = default)"
+                        android:textColor="#888888"
+                        android:textSize="@dimen/_11ssp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/editor_res_width"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:background="@drawable/background_line"
+                            android:padding="@dimen/_8sdp"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/_13ssp"
+                            android:hint="Width"
+                            android:inputType="number"
+                            android:singleLine="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="x"
+                            android:textColor="#888888"
+                            android:textSize="@dimen/_13ssp"
+                            android:paddingHorizontal="@dimen/_4sdp" />
+
+                        <EditText
+                            android:id="@+id/editor_res_height"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_4sdp"
+                            android:background="@drawable/background_line"
+                            android:padding="@dimen/_8sdp"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/_13ssp"
+                            android:hint="Height"
+                            android:inputType="number"
+                            android:singleLine="true" />
+                    </LinearLayout>
+
+                    <!-- Account per profile -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Account"
+                        android:textColor="#888888"
+                        android:textSize="@dimen/_11ssp" />
+                    <Spinner
+                        android:id="@+id/editor_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/background_line" />
                 </LinearLayout>
 
                 <!-- Action Buttons Card -->
@@ -386,12 +471,75 @@
                         android:textAllCaps="false"
                         android:textSize="@dimen/_13ssp"
                         android:textColor="#121213" />
+
+                    <Button
+                        android:id="@+id/editor_duplicate"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_42sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:background="@drawable/mine_button_background"
+                        android:text="Duplicate Profile"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/_13ssp"
+                        android:textColor="#121213" />
+
+                    <Button
+                        android:id="@+id/editor_export"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_42sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:background="@drawable/mine_button_background"
+                        android:text="Export Profile"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/_13ssp"
+                        android:textColor="#121213" />
+                </LinearLayout>
+
+                <!-- Screenshots Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/panel_bg"
+                    android:padding="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_6sdp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SCREENSHOTS"
+                        android:textColor="@color/minebutton_color"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+
+                    <TextView
+                        android:id="@+id/editor_screenshots_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:background="@drawable/background_line"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/_13ssp"
+                        android:text="No screenshots" />
+
+                    <Button
+                        android:id="@+id/editor_open_screenshots"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_42sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:background="@drawable/mine_button_background"
+                        android:text="Open Screenshots Folder"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/_13ssp"
+                        android:textColor="#121213" />
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
-        <!-- Mods list -->
+        <!-- Mods container -->
         <LinearLayout
             android:id="@+id/mods_container"
             android:layout_width="match_parent"
@@ -410,6 +558,18 @@
                 android:textColor="@color/primary_text"
                 android:layout_marginBottom="@dimen/_4sdp" />
 
+            <EditText
+                android:id="@+id/mods_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_line"
+                android:padding="@dimen/_8sdp"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/_12ssp"
+                android:hint="Search mods..."
+                android:singleLine="true"
+                android:layout_marginBottom="@dimen/_4sdp" />
+
             <ListView
                 android:id="@+id/mods_list"
                 android:layout_width="match_parent"
@@ -419,13 +579,25 @@
                 android:dividerHeight="1dp" />
         </LinearLayout>
 
-        <!-- Resource packs list -->
+        <!-- Resource packs container -->
         <LinearLayout
             android:id="@+id/resourcepacks_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
             android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/resourcepacks_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_line"
+                android:padding="@dimen/_8sdp"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/_12ssp"
+                android:hint="Search resource packs..."
+                android:singleLine="true"
+                android:layout_marginBottom="@dimen/_4sdp" />
 
             <ListView
                 android:id="@+id/resourcepacks_list"
