@@ -2,7 +2,6 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,21 +123,16 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             enabled = mod.enabled;
             iconText.setText("M");
             iconText.setTextColor(0xFFFFFFFF);
-            iconText.setVisibility(View.GONE);
-            iconImage.setVisibility(View.VISIBLE);
+            iconImage.setVisibility(View.GONE);
+            iconText.setVisibility(View.VISIBLE);
+            iconText.setPadding(0, 0, 0, 0);
+            iconText.setBackgroundColor(COLOR_MOD);
 
             Bitmap modIcon = loadModIcon(mod.file, mod.iconPath);
             if(modIcon != null) {
+                iconText.setVisibility(View.GONE);
+                iconImage.setVisibility(View.VISIBLE);
                 iconImage.setImageBitmap(modIcon);
-            } else {
-                iconText.setVisibility(View.VISIBLE);
-                iconImage.setVisibility(View.GONE);
-                iconText.setBackgroundResource(android.R.color.transparent);
-                GradientDrawable modBg = new GradientDrawable();
-                modBg.setShape(GradientDrawable.OVAL);
-                modBg.setSize(36, 36);
-                modBg.setColor(COLOR_MOD);
-                iconText.setBackground(modBg);
             }
             toggle.setVisibility(mShowToggle ? View.VISIBLE : View.GONE);
         } else if(item instanceof ResourcePackEntry) {
