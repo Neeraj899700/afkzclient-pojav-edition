@@ -450,9 +450,9 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 }, null);
 
                 // Copy icon
-                File srcIcon = new File(src.mInstanceRoot, "icon.webp");
+                File srcIcon = new File(src.getInstanceRoot(), "icon.webp");
                 if(srcIcon.exists()) {
-                    File dstIcon = new File(newInstance.mInstanceRoot, "icon.webp");
+                    File dstIcon = new File(newInstance.getInstanceRoot(), "icon.webp");
                     try (FileInputStream fis = new FileInputStream(srcIcon);
                          FileOutputStream fos = new FileOutputStream(dstIcon)) {
                         byte[] buf = new byte[4096];
@@ -467,7 +467,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
                 // Reload and select
                 loadInstances();
                 for(Instance inst : mInstances) {
-                    if(inst.mInstanceRoot.equals(newInstance.mInstanceRoot)) {
+                    if(inst.getInstanceRoot().equals(newInstance.getInstanceRoot())) {
                         selectInstance(inst);
                         break;
                     }

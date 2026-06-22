@@ -1,5 +1,7 @@
 package net.kdt.pojavlaunch.fragments;
 
+import java.io.File;
+
 public class ResourcePackEntry {
     public final String fileName;
     public final String displayName;
