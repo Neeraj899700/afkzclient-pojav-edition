@@ -1,35 +1,45 @@
 package net.kdt.pojavlaunch.fragments;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import git.artdeell.mojo.R;
+import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.extra.ExtraConstants;
+import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.instances.Instance;
+import net.kdt.pojavlaunch.instances.InstanceIconProvider;
 import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.multirt.MultiRTUtils;
 import net.kdt.pojavlaunch.multirt.RTSpinnerAdapter;
 import net.kdt.pojavlaunch.multirt.Runtime;
 import net.kdt.pojavlaunch.profiles.VersionSelectorDialog;
-import net.kdt.pojavlaunch.profiles.VersionSelectorListener;
+import net.kdt.pojavlaunch.utils.CropperUtils;
+import net.kdt.pojavlaunch.utils.RendererCompatUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class InstanceTabFragment extends Fragment {
+public class InstanceTabFragment extends Fragment implements CropperUtils.CropperReceiver {
 
     public static final String TAG = "InstanceTabFragment";
 
@@ -38,15 +48,24 @@ public class InstanceTabFragment extends Fragment {
     private ScrollView mMetaContent;
     private ListView mModsList, mResourcePacksList;
 
+    private ImageView mInstanceIcon;
     private EditText mEditorName;
     private TextView mEditorVersion;
+    private Button mEditorVersionButton;
     private Spinner mEditorRuntime;
+    private Spinner mEditorRenderer;
     private EditText mEditorJvmArgs;
+    private TextView mEditorControl;
+    private Button mEditorControlButton;
+    private CheckBox mEditorSharedData;
     private Button mEditorSave;
+    private Button mEditorDelete;
 
     private List<Instance> mInstances;
     private Instance mCurrentInstance;
-    private RTSpinnerAdapter mRuntimeAdapter;
+    private List<String> mRenderNames;
+    private int mRecommendedIconSize;
+    private final ActivityResultLauncher<?> mCropperLauncher = CropperUtils.registerCropper(this, this);
 
     public InstanceTabFragment() {
         super(R.layout.fragment_instance_tab);
@@ -62,11 +81,18 @@ public class InstanceTabFragment extends Fragment {
         mModsList = view.findViewById(R.id.mods_list);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
 
+        mInstanceIcon = view.findViewById(R.id.editor_icon);
         mEditorName = view.findViewById(R.id.editor_name);
         mEditorVersion = view.findViewById(R.id.editor_version);
+        mEditorVersionButton = view.findViewById(R.id.editor_version_button);
         mEditorRuntime = view.findViewById(R.id.editor_runtime);
+        mEditorRenderer = view.findViewById(R.id.editor_renderer);
         mEditorJvmArgs = view.findViewById(R.id.editor_jvm_args);
+        mEditorControl = view.findViewById(R.id.editor_control);
+        mEditorControlButton = view.findViewById(R.id.editor_control_button);
+        mEditorSharedData = view.findViewById(R.id.editor_shared_data);
         mEditorSave = view.findViewById(R.id.editor_save);
+        mEditorDelete = view.findViewById(R.id.editor_delete);
 
         loadInstances();
 
@@ -76,18 +102,12 @@ public class InstanceTabFragment extends Fragment {
         mTabMods.setOnClickListener(v -> showTab(1));
         mTabResourcePacks.setOnClickListener(v -> showTab(2));
 
-        mEditorVersion.setOnClickListener(v -> {
-            if(mCurrentInstance != null) {
-                VersionSelectorDialog.open(requireActivity(), false, (version, isSnapshot) -> {
-                    mCurrentInstance.versionId = version;
-                    mEditorVersion.setText(version);
-                });
-            }
-        });
-
-        mEditorSave.setOnClickListener(v -> saveInstance());
-
-        setupRuntimeSpinner();
+        setupVersionSelector();
+        setupControlSelector();
+        setupRuntimeRenderer();
+        setupSharedData();
+        setupIcon();
+        setupSaveDelete();
 
         if(!mInstances.isEmpty()) {
             selectInstance(mInstances.get(0));
@@ -95,10 +115,59 @@ public class InstanceTabFragment extends Fragment {
         showTab(0);
     }
 
-    private void setupRuntimeSpinner() {
+    private void setupVersionSelector() {
+        View.OnClickListener listener = v -> VersionSelectorDialog.open(requireContext(), false,
+                (id, snapshot) -> mEditorVersion.setText(id));
+        mEditorVersion.setOnClickListener(listener);
+        mEditorVersionButton.setOnClickListener(listener);
+    }
+
+    private void setupControlSelector() {
+        View.OnClickListener listener = v -> {
+            Bundle bundle = new Bundle(3);
+            bundle.putBoolean(FileSelectorFragment.BUNDLE_SELECT_FOLDER, false);
+            bundle.putString(FileSelectorFragment.BUNDLE_ROOT_PATH, Tools.CTRLMAP_PATH);
+            Tools.swapFragment(requireActivity(),
+                    FileSelectorFragment.class, FileSelectorFragment.TAG, bundle);
+        };
+        mEditorControl.setOnClickListener(listener);
+        mEditorControlButton.setOnClickListener(listener);
+    }
+
+    private void setupRuntimeRenderer() {
         List<Runtime> runtimes = MultiRTUtils.getRuntimes();
-        mRuntimeAdapter = new RTSpinnerAdapter(requireContext(), runtimes);
-        mEditorRuntime.setAdapter(mRuntimeAdapter);
+        mEditorRuntime.setAdapter(new RTSpinnerAdapter(requireContext(), runtimes));
+
+        RendererCompatUtil.RenderersList renderersList = RendererCompatUtil.getCompatibleRenderers(requireContext());
+        mRenderNames = renderersList.rendererIds;
+        List<String> renderList = new ArrayList<>(Arrays.asList(renderersList.rendererDisplayNames));
+        renderList.add(requireContext().getString(R.string.global_default));
+        mEditorRenderer.setAdapter(new android.widget.ArrayAdapter<>(requireContext(),
+                R.layout.item_simple_list_1, renderList));
+    }
+
+    private void setupSharedData() {
+        mEditorSharedData.setOnCheckedChangeListener((v, checked) -> {
+            if(mCurrentInstance != null) {
+                mCurrentInstance.sharedData = checked;
+            }
+            mEditorSharedData.setText(checked ? "Shared data: ON" : "Shared data: OFF");
+        });
+    }
+
+    private void setupIcon() {
+        mInstanceIcon.setOnClickListener(v -> {
+            mRecommendedIconSize = Math.max(v.getWidth(), v.getHeight());
+            CropperUtils.startCropper(mCropperLauncher);
+        });
+    }
+
+    private void setupSaveDelete() {
+        mEditorSave.setOnClickListener(v -> saveInstance());
+        mEditorDelete.setOnClickListener(v -> {
+            DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
+            dialog.show(getChildFragmentManager(), "delete_dialog");
+        });
     }
 
     private void loadInstances() {
@@ -135,39 +204,70 @@ public class InstanceTabFragment extends Fragment {
 
     private void populateEditor() {
         if(mCurrentInstance == null) return;
-        mEditorName.setText(mCurrentInstance.name != null ? mCurrentInstance.name : "");
-        mEditorVersion.setText(mCurrentInstance.versionId != null ? mCurrentInstance.versionId : "Not set");
-        mEditorJvmArgs.setText(mCurrentInstance.jvmArgs != null ? mCurrentInstance.jvmArgs : "");
 
-        if(mRuntimeAdapter != null) {
-            String selectedRuntime = mCurrentInstance.selectedRuntime;
-            for(int i = 0; i < mRuntimeAdapter.getCount(); i++) {
-                Runtime rt = (Runtime) mRuntimeAdapter.getItem(i);
-                if(rt.name.equals(selectedRuntime)) {
-                    mEditorRuntime.setSelection(i);
-                    break;
-                }
-            }
+        mInstanceIcon.setImageDrawable(
+                InstanceIconProvider.fetchIcon(getResources(), mCurrentInstance));
+        mEditorName.setText(nullToEmpty(mCurrentInstance.name));
+        mEditorVersion.setText(mCurrentInstance.versionId);
+        mEditorJvmArgs.setText(nullToEmpty(mCurrentInstance.jvmArgs));
+        mEditorControl.setText(nullToEmpty(mCurrentInstance.controlLayout));
+        mEditorSharedData.setChecked(mCurrentInstance.sharedData);
+
+        String value = (String) ExtraCore.consumeValue(ExtraConstants.FILE_SELECTOR);
+        if(value != null) {
+            mEditorControl.setText(value);
         }
+
+        List<Runtime> runtimes = MultiRTUtils.getRuntimes();
+        int jvmIndex = -1;
+        if(mCurrentInstance.selectedRuntime != null) {
+            jvmIndex = runtimes.indexOf(new Runtime(mCurrentInstance.selectedRuntime));
+        }
+        mEditorRuntime.setAdapter(new RTSpinnerAdapter(requireContext(), runtimes));
+        if(jvmIndex == -1) jvmIndex = runtimes.size() - 1;
+        mEditorRuntime.setSelection(jvmIndex);
+
+        int rendererIndex = mRenderNames != null ? mRenderNames.indexOf(mCurrentInstance.getLaunchRenderer()) : -1;
+        if(rendererIndex == -1 && mEditorRenderer.getAdapter() != null) {
+            rendererIndex = mEditorRenderer.getAdapter().getCount() - 1;
+        }
+        if(rendererIndex >= 0) mEditorRenderer.setSelection(rendererIndex);
     }
 
     private void saveInstance() {
         if(mCurrentInstance == null) return;
-        String name = mEditorName.getText().toString().trim();
-        if(!name.isEmpty()) mCurrentInstance.name = name;
-        String jvmArgs = mEditorJvmArgs.getText().toString().trim();
-        mCurrentInstance.jvmArgs = !jvmArgs.isEmpty() ? jvmArgs : null;
-        if(mEditorRuntime.getSelectedItem() instanceof Runtime) {
-            Runtime rt = (Runtime) mEditorRuntime.getSelectedItem();
-            mCurrentInstance.selectedRuntime = rt.name;
+
+        mCurrentInstance.versionId = mEditorVersion.getText().toString();
+        mCurrentInstance.controlLayout = mEditorControl.getText().toString();
+        mCurrentInstance.name = mEditorName.getText().toString();
+        mCurrentInstance.jvmArgs = mEditorJvmArgs.getText().toString();
+
+        if(mCurrentInstance.controlLayout.isEmpty()) mCurrentInstance.controlLayout = null;
+        if(mCurrentInstance.jvmArgs.isEmpty()) mCurrentInstance.jvmArgs = null;
+
+        Runtime selectedRuntime = (Runtime) mEditorRuntime.getSelectedItem();
+        mCurrentInstance.selectedRuntime = (selectedRuntime.name.equals("<Default>") || selectedRuntime.versionString == null)
+                ? null : selectedRuntime.name;
+
+        if(mEditorRenderer.getSelectedItemPosition() == mRenderNames.size()) {
+            mCurrentInstance.renderer = null;
+        } else {
+            mCurrentInstance.renderer = mRenderNames.get(mEditorRenderer.getSelectedItemPosition());
         }
+
         try {
             mCurrentInstance.write();
             Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show();
-            mInstanceSelector.setText(mCurrentInstance.name != null ? mCurrentInstance.name : "Unnamed");
+            String displayName = mCurrentInstance.name != null && !mCurrentInstance.name.isEmpty()
+                    ? mCurrentInstance.name : "Unnamed";
+            mInstanceSelector.setText(displayName);
         } catch (IOException e) {
             Toast.makeText(requireContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private static String nullToEmpty(String in) {
+        return in != null ? in : "";
     }
 
     private void showTab(int tab) {
@@ -218,5 +318,27 @@ public class InstanceTabFragment extends Fragment {
         int exp = (int) (Math.log(bytes) / Math.log(1024));
         String pre = "KMGTPE".charAt(exp-1) + "B";
         return String.format("%.1f %s", bytes / Math.pow(1024, exp), pre);
+    }
+
+    @Override
+    public float getAspectRatio() { return 1f; }
+
+    @Override
+    public int getTargetMaxSide() { return mRecommendedIconSize; }
+
+    @Override
+    public void onCropped(Bitmap contentBitmap) {
+        if(mCurrentInstance == null) return;
+        mInstanceIcon.setImageBitmap(contentBitmap);
+        try {
+            mCurrentInstance.encodeNewIcon(contentBitmap);
+        } catch (IOException e) {
+            Tools.showErrorRemote(e);
+        }
+    }
+
+    @Override
+    public void onFailed(Exception exception) {
+        Tools.showErrorRemote(exception);
     }
 }
