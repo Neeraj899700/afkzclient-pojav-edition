@@ -124,7 +124,7 @@ public class FileListAdapter extends BaseAdapter implements Filterable {
             enabled = mod.enabled;
             iconText.setText("M");
             iconText.setTextColor(0xFFFFFFFF);
-            iconText.setBackgroundTintList(null);
+            iconText.setVisibility(View.VISIBLE);
             iconText.setBackgroundResource(android.R.color.transparent);
             GradientDrawable modBg = new GradientDrawable();
             modBg.setShape(GradientDrawable.OVAL);
