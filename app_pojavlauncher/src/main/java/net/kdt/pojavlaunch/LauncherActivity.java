@@ -27,6 +27,7 @@ import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.extra.ExtraListener;
+import net.kdt.pojavlaunch.fragments.InstanceTabFragment;
 import net.kdt.pojavlaunch.fragments.MainMenuFragment;
 import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment;
 import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
@@ -116,14 +117,14 @@ public class LauncherActivity extends BaseActivity {
         }
     };
 
-    /* Listener for the instance button - go to main menu */
+    /* Listener for the instance button - go to instance tab */
     private final View.OnClickListener mInstanceButtonListener = v -> {
         setNavSelected(v);
         FragmentManager manager = getSupportFragmentManager();
         if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
-        if(!(fragment instanceof MainMenuFragment)){
-            Tools.backToMainMenu(this);
+        if(!(fragment instanceof InstanceTabFragment)){
+            Tools.swapFragment(this, InstanceTabFragment.class, InstanceTabFragment.TAG, null);
         }
     };
 
