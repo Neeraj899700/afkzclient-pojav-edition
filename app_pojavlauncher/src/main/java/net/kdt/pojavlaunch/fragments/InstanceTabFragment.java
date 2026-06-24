@@ -633,7 +633,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
             btnShare.setOnClickListener(v -> {
                 Uri uri = FileProvider.getUriForFile(requireContext(),
-                        requireContext().getPackageName() + ".provider", shot);
+                        getString(R.string.storageProviderAuthorities), shot);
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
