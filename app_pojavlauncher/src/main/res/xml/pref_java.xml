@@ -33,8 +33,7 @@
             app2:showSeekBarValue="true"
             app2:min="@integer/memory_seekbar_min"
             app2:seekBarIncrement="@integer/memory_seekbar_increment"
-            app2:selectable="false"
-            app2:layout="@layout/preference_item_premium"/>
+            app2:selectable="false" />
 
         <SwitchPreference
             android:defaultValue="true"
