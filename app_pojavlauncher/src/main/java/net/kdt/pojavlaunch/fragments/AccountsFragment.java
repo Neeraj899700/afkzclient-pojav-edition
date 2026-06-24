@@ -157,7 +157,7 @@ public class AccountsFragment extends Fragment {
 
             // Selected state
             holder.selectedIndicator.setVisibility(isSelected ? View.VISIBLE : View.GONE);
-            holder.card.setBackgroundResource(isSelected ? R.drawable.account_card_selected_bg : R.drawable.account_card_bg);
+            holder.itemView.setBackgroundResource(isSelected ? R.drawable.account_card_selected_bg : R.drawable.account_card_bg);
 
             // Load skin head
             if (account.getSkinFace() != null) {
