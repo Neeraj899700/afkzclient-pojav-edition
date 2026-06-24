@@ -67,10 +67,11 @@
     <LinearLayout
         android:id="@+id/bottom_nav_panel"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_52sdp"
+        android:layout_height="@dimen/_56sdp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/nav_bar_bg"
+        android:paddingVertical="@dimen/_2sdp"
         app:layout_constraintBottom_toTopOf="@+id/progress_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -81,10 +82,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_home"
-            android:background="@drawable/nav_btn_bg"
+            android:background="@drawable/nav_icon_bg"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_10sdp"
+            android:scaleType="centerInside"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="Home" />
 
         <ImageButton
@@ -93,10 +94,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_instance"
-            android:background="@drawable/nav_btn_bg"
+            android:background="@drawable/nav_icon_bg"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_10sdp"
+            android:scaleType="centerInside"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="Instance" />
 
         <ImageButton
@@ -105,10 +106,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_account"
-            android:background="@drawable/nav_btn_bg"
+            android:background="@drawable/nav_icon_bg"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_10sdp"
+            android:scaleType="centerInside"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="Account" />
 
         <ImageButton
@@ -117,10 +118,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_nav_settings"
-            android:background="@drawable/nav_btn_bg"
+            android:background="@drawable/nav_icon_bg"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/_10sdp"
+            android:scaleType="centerInside"
+            android:padding="@dimen/_8sdp"
             android:contentDescription="Settings" />
 
     </LinearLayout>

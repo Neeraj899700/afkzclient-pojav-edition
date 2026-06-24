@@ -27,6 +27,7 @@ import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.extra.ExtraListener;
+import net.kdt.pojavlaunch.fragments.AccountsFragment;
 import net.kdt.pojavlaunch.fragments.InstanceTabFragment;
 import net.kdt.pojavlaunch.fragments.MainMenuFragment;
 import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment;
@@ -106,14 +107,14 @@ public class LauncherActivity extends BaseActivity {
         }
     };
 
-    /* Listener for the account button - open account panel */
+    /* Listener for the account button - always open accounts screen */
     private final View.OnClickListener mAccountButtonListener = v -> {
         setNavSelected(v);
         FragmentManager manager = getSupportFragmentManager();
         if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
-        if(fragment instanceof MainMenuFragment){
-            ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
+        if(!(fragment instanceof AccountsFragment)){
+            Tools.swapFragment(this, AccountsFragment.class, "ACCOUNTS_FRAGMENT", null);
         }
     };
 
