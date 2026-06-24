@@ -518,6 +518,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         new Thread(() -> {
             long size = folderSize(gameDir);
             String human = humanReadableSize(size);
+            if(!isAdded()) return;
             requireActivity().runOnUiThread(() ->
                     mEditorDiskUsage.setText(human));
         }).start();
