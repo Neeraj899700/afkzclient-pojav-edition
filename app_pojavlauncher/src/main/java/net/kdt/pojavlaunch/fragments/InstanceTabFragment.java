@@ -799,11 +799,12 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             }
 
             mModEntries = entries;
-            int disabled = total - enabled;
+            final int finalTotal = total;
+            final int finalDisabled = total - enabled;
             if(!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
-                mModsHeader.setText(total + " mod" + (total != 1 ? "s" : "") + " loaded"
-                        + (disabled > 0 ? ", " + disabled + " disabled" : ""));
+                mModsHeader.setText(finalTotal + " mod" + (finalTotal != 1 ? "s" : "") + " loaded"
+                        + (finalDisabled > 0 ? ", " + finalDisabled + " disabled" : ""));
                 mModsAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mModEntries,
                 (position, isChecked) -> {
                     Object item = mModsAdapter.getItem(position);
