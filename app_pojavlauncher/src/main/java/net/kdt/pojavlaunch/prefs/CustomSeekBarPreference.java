@@ -56,6 +56,11 @@ public class CustomSeekBarPreference extends SeekBarPreference {
         if(titleTextView != null) titleTextView.setTextColor(Color.WHITE);
     }
 
+    /** Stub: suffix is unused but fragments still call this */
+    public void setSuffix(String suffix) {
+        // no-op, suffix display removed with custom layout
+    }
+
     /**
      * Convenience function to set both min and max at the same time.
      * @param min The minimum value
