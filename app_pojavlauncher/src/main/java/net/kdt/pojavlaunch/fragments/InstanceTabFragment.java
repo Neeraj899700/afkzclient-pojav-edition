@@ -78,6 +78,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private Button mScreenshotsOpenFolder;
     private ListView mModsList, mResourcePacksList;
     private TextView mModsHeader;
+    private ImageView mModsOpenFolder;
     private TextView mResourcePacksHeader;
     private EditText mModsSearch, mResourcePacksSearch;
 
@@ -112,6 +113,10 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private List<ResourcePackEntry> mResourcePackEntries;
     private List<MinecraftAccount> mAccounts;
     private boolean mAccountsLoaded;
+    private File[] mAllScreenshots;
+    private int mScreenshotOffset;
+    private static final int SCREENSHOT_BATCH_SIZE = 5;
+    private boolean mScreenshotsLoading;
     private final ActivityResultLauncher<?> mCropperLauncher = CropperUtils.registerCropper(this, this);
 
     public InstanceTabFragment() {
@@ -135,6 +140,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mScreenshotsOpenFolder = view.findViewById(R.id.screenshots_open_folder);
         mModsList = view.findViewById(R.id.mods_list);
         mModsHeader = view.findViewById(R.id.mods_header);
+        mModsOpenFolder = view.findViewById(R.id.mods_open_folder);
         mModsSearch = view.findViewById(R.id.mods_search);
         mResourcePacksContainer = view.findViewById(R.id.resourcepacks_container);
         mResourcePacksList = view.findViewById(R.id.resourcepacks_list);
@@ -179,6 +185,19 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         });
         mTabScreenshots.setOnClickListener(v -> showTab(3));
         mScreenshotsOpenFolder.setOnClickListener(v -> openScreenshots());
+        mModsOpenFolder.setOnClickListener(v -> {
+            if(mCurrentInstance == null) return;
+            File modsDir = new File(mCurrentInstance.getGameDirectory(), "mods");
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(modsDir), "resource/folder");
+            try { startActivity(intent); } catch(Exception e) {
+                Intent fallback = new Intent(Intent.ACTION_VIEW);
+                fallback.setDataAndType(Uri.fromFile(modsDir), "*/*");
+                try { startActivity(fallback); } catch(Exception e2) {
+                    Toast.makeText(requireContext(), "No file manager found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         setupVersionSelector();
         setupControlSelector();
@@ -578,14 +597,17 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private void loadScreenshotsList() {
         if(mCurrentInstance == null) return;
         mScreenshotsGrid.removeAllViews();
+        mScreenshotOffset = 0;
+        mScreenshotsLoading = false;
+
         File gameDir = mCurrentInstance.getGameDirectory();
         File screenshotsDir = new File(gameDir, "screenshots");
         if(!screenshotsDir.exists()) screenshotsDir.mkdirs();
 
-        File[] shots = screenshotsDir.listFiles((dir, name) ->
+        mAllScreenshots = screenshotsDir.listFiles((dir, name) ->
                 name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"));
 
-        if(shots == null || shots.length == 0) {
+        if(mAllScreenshots == null || mAllScreenshots.length == 0) {
             mScreenshotsHeader.setText("SCREENSHOTS — 0");
             mScreenshotsEmpty.setVisibility(View.VISIBLE);
             mScreenshotsGrid.setVisibility(View.GONE);
@@ -593,72 +615,121 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         }
 
         // Sort newest first
-        java.util.Arrays.sort(shots, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+        java.util.Arrays.sort(mAllScreenshots, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
 
-        mScreenshotsHeader.setText("SCREENSHOTS — " + shots.length);
+        mScreenshotsHeader.setText("SCREENSHOTS — " + mAllScreenshots.length);
         mScreenshotsEmpty.setVisibility(View.GONE);
         mScreenshotsGrid.setVisibility(View.VISIBLE);
 
-        SimpleDateFormat dateFmt = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
+        // Load first batch
+        loadNextScreenshotBatch();
 
-        for(File shot : shots) {
-            View item = LayoutInflater.from(getContext()).inflate(R.layout.item_screenshot, mScreenshotsGrid, false);
+        // Setup scroll listener for lazy loading
+        mScreenshotsContainer.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if(mScreenshotsLoading) return;
+            if(mScreenshotOffset >= mAllScreenshots.length) return;
 
-            ImageView thumbnail = item.findViewById(R.id.screenshot_thumbnail);
-            TextView nameText = item.findViewById(R.id.screenshot_name);
-            TextView dateText = item.findViewById(R.id.screenshot_date);
-            Button btnView = item.findViewById(R.id.screenshot_btn_view);
-            Button btnShare = item.findViewById(R.id.screenshot_btn_share);
-            Button btnDelete = item.findViewById(R.id.screenshot_btn_delete);
+            int scrollY = mScreenshotsContainer.getScrollY();
+            int childHeight = mScreenshotsContainer.getChildAt(0) != null ? mScreenshotsContainer.getChildAt(0).getHeight() : 0;
+            int visibleHeight = mScreenshotsContainer.getHeight();
 
-            nameText.setText(shot.getName());
-            dateText.setText(dateFmt.format(new Date(shot.lastModified())));
+            // Load more when scrolled near bottom
+            if(scrollY + visibleHeight >= childHeight - 200) {
+                loadNextScreenshotBatch();
+            }
+        });
+    }
 
-            // Load thumbnail
-            try {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inSampleSize = 4;
-                Bitmap thumb = BitmapFactory.decodeFile(shot.getAbsolutePath(), opts);
-                if(thumb != null) thumbnail.setImageBitmap(thumb);
-            } catch(Exception ignored) {}
+    private void loadNextScreenshotBatch() {
+        if(mAllScreenshots == null || mScreenshotOffset >= mAllScreenshots.length || mScreenshotsLoading) return;
+        mScreenshotsLoading = true;
 
-            btnView.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(shot), "image/*");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                try { startActivity(intent); } catch(Exception e) {
-                    Toast.makeText(requireContext(), "No image viewer found", Toast.LENGTH_SHORT).show();
+        final int start = mScreenshotOffset;
+        final int end = Math.min(start + SCREENSHOT_BATCH_SIZE, mAllScreenshots.length);
+
+        // Show loading indicator at bottom
+        // (reuse screenshot_empty as a "Loading..." indicator)
+        mScreenshotsEmpty.setText("Loading...");
+        mScreenshotsEmpty.setVisibility(View.VISIBLE);
+
+        PojavApplication.sExecutorService.execute(() -> {
+            SimpleDateFormat dateFmt = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
+            List<View> newItems = new ArrayList<>();
+
+            for(int i = start; i < end; i++) {
+                File shot = mAllScreenshots[i];
+                View item = LayoutInflater.from(getContext()).inflate(R.layout.item_screenshot, mScreenshotsGrid, false);
+
+                ImageView thumbnail = item.findViewById(R.id.screenshot_thumbnail);
+                TextView nameText = item.findViewById(R.id.screenshot_name);
+                TextView dateText = item.findViewById(R.id.screenshot_date);
+                Button btnView = item.findViewById(R.id.screenshot_btn_view);
+                Button btnShare = item.findViewById(R.id.screenshot_btn_share);
+                Button btnDelete = item.findViewById(R.id.screenshot_btn_delete);
+
+                nameText.setText(shot.getName());
+                dateText.setText(dateFmt.format(new Date(shot.lastModified())));
+
+                // Load thumbnail
+                try {
+                    BitmapFactory.Options opts = new BitmapFactory.Options();
+                    opts.inSampleSize = 4;
+                    Bitmap thumb = BitmapFactory.decodeFile(shot.getAbsolutePath(), opts);
+                    if(thumb != null) thumbnail.setImageBitmap(thumb);
+                } catch(Exception ignored) {}
+
+                final int idx = i;
+                btnView.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(mAllScreenshots[idx]), "image/*");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    try { startActivity(intent); } catch(Exception e) {
+                        Toast.makeText(requireContext(), "No image viewer found", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                btnShare.setOnClickListener(v -> {
+                    Uri uri = FileProvider.getUriForFile(requireContext(),
+                            getString(R.string.storageProviderAuthorities), mAllScreenshots[idx]);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    try { startActivity(Intent.createChooser(intent, "Share screenshot")); } catch(Exception e) {
+                        Toast.makeText(requireContext(), "No share app found", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                btnDelete.setOnClickListener(v -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Delete Screenshot")
+                            .setMessage("Delete " + mAllScreenshots[idx].getName() + "?")
+                            .setPositiveButton("Delete", (d, w) -> {
+                                if(mAllScreenshots[idx].delete()) {
+                                    Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                                    loadScreenshotsList();
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                });
+
+                newItems.add(item);
+            }
+
+            mScreenshotOffset = end;
+
+            if(!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                for(View v : newItems) {
+                    mScreenshotsGrid.addView(v);
                 }
+                mScreenshotsEmpty.setVisibility(
+                        mScreenshotOffset >= mAllScreenshots.length ? View.GONE : View.VISIBLE);
+                mScreenshotsEmpty.setText("No screenshots");
+                mScreenshotsLoading = false;
             });
-
-            btnShare.setOnClickListener(v -> {
-                Uri uri = FileProvider.getUriForFile(requireContext(),
-                        getString(R.string.storageProviderAuthorities), shot);
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                try { startActivity(Intent.createChooser(intent, "Share screenshot")); } catch(Exception e) {
-                    Toast.makeText(requireContext(), "No share app found", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            btnDelete.setOnClickListener(v -> {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle("Delete Screenshot")
-                        .setMessage("Delete " + shot.getName() + "?")
-                        .setPositiveButton("Delete", (d, w) -> {
-                            if(shot.delete()) {
-                                Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show();
-                                loadScreenshotsList();
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            });
-
-            mScreenshotsGrid.addView(item);
-        }
+        });
     }
 
     private void showTab(int tab) {
@@ -697,43 +768,49 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
     private void loadModsList() {
         if(mCurrentInstance == null) return;
-        File gameDir = mCurrentInstance.getGameDirectory();
-        File modsDir = new File(gameDir, "mods");
-        mModEntries = new ArrayList<>();
+        mModsHeader.setText("Loading mods...");
+        PojavApplication.sExecutorService.execute(() -> {
+            File gameDir = mCurrentInstance.getGameDirectory();
+            File modsDir = new File(gameDir, "mods");
+            List<ModEntry> entries = new ArrayList<>();
 
-        File[] allFiles = modsDir.listFiles();
-        int total = 0, enabled = 0;
-        if(allFiles != null) {
-            for(File f : allFiles) {
-                String name = f.getName();
-                boolean isEnabled = !name.endsWith(".disabled");
-                String realName = name.replaceAll("\\.disabled$", "");
-                if(!realName.endsWith(".jar")) continue;
+            File[] allFiles = modsDir.listFiles();
+            int total = 0, enabled = 0;
+            if(allFiles != null) {
+                for(File f : allFiles) {
+                    String name = f.getName();
+                    boolean isEnabled = !name.endsWith(".disabled");
+                    String realName = name.replaceAll("\\.disabled$", "");
+                    if(!realName.endsWith(".jar")) continue;
 
-                total++;
-                if(isEnabled) enabled++;
+                    total++;
+                    if(isEnabled) enabled++;
 
-                ModMetadata meta = readModMetadata(f);
-                mModEntries.add(new ModEntry(realName,
-                        meta != null ? meta.name : null,
-                        meta != null ? meta.description : null,
-                        meta != null ? meta.author : null,
-                        meta != null ? meta.version : null,
-                        isEnabled, f,
-                        meta != null ? meta.iconPath : null));
+                    ModMetadata meta = readModMetadata(f);
+                    entries.add(new ModEntry(realName,
+                            meta != null ? meta.name : null,
+                            meta != null ? meta.description : null,
+                            meta != null ? meta.author : null,
+                            meta != null ? meta.version : null,
+                            isEnabled, f,
+                            meta != null ? meta.iconPath : null));
+                }
             }
-        }
 
-        int disabled = total - enabled;
-        mModsHeader.setText(total + " mod" + (total != 1 ? "s" : "") + " loaded"
-                + (disabled > 0 ? ", " + disabled + " disabled" : ""));
-
-        mModsAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mModEntries,
+            mModEntries = entries;
+            int disabled = total - enabled;
+            if(!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                mModsHeader.setText(total + " mod" + (total != 1 ? "s" : "") + " loaded"
+                        + (disabled > 0 ? ", " + disabled + " disabled" : ""));
+                mModsAdapter = new FileListAdapter(LayoutInflater.from(requireContext()), mModEntries,
                 (position, isChecked) -> {
                     Object item = mModsAdapter.getItem(position);
                     if(item instanceof ModEntry) toggleMod((ModEntry) item);
                 }, true);
-        mModsList.setAdapter(mModsAdapter);
+                mModsList.setAdapter(mModsAdapter);
+            });
+        });
     }
 
 
