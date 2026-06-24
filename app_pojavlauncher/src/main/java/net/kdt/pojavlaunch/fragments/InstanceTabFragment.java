@@ -94,7 +94,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     private Button mEditorControlButton;
     private CheckBox mEditorSharedData;
     private TextView mEditorDiskUsage;
-    private TextView mEditorLastPlayed;
     private EditText mEditorResWidth, mEditorResHeight;
     private Spinner mEditorAccount;
     private Button mEditorSave;
@@ -159,7 +158,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorControlButton = view.findViewById(R.id.editor_control_button);
         mEditorSharedData = view.findViewById(R.id.editor_shared_data);
         mEditorDiskUsage = view.findViewById(R.id.editor_disk_usage);
-        mEditorLastPlayed = view.findViewById(R.id.editor_last_played);
         mEditorResWidth = view.findViewById(R.id.editor_res_width);
         mEditorResHeight = view.findViewById(R.id.editor_res_height);
         mEditorAccount = view.findViewById(R.id.editor_account);
@@ -245,7 +243,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         List<String> renderList = new ArrayList<>(Arrays.asList(renderersList.rendererDisplayNames));
         renderList.add(requireContext().getString(R.string.global_default));
         mEditorRenderer.setAdapter(new android.widget.ArrayAdapter<>(requireContext(),
-                R.layout.item_simple_list_1, renderList));
+                R.layout.item_spinner_premium, renderList));
     }
 
     private void setupSharedData() {
@@ -315,7 +313,7 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             names.add(acc.username);
         }
         mEditorAccount.setAdapter(new ArrayAdapter<>(requireContext(),
-                R.layout.item_simple_list_1, names));
+                R.layout.item_spinner_premium, names));
         mAccountsLoaded = true;
     }
 
@@ -363,7 +361,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mEditorSharedData.setChecked(mCurrentInstance.sharedData);
 
         updateDiskUsage();
-        updateLastPlayed();
         updateScreenshotsInfo();
 
         mEditorResWidth.setText(mCurrentInstance.resolutionWidth > 0 ? String.valueOf(mCurrentInstance.resolutionWidth) : "");
@@ -542,17 +539,6 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             requireActivity().runOnUiThread(() ->
                     mEditorDiskUsage.setText(human));
         }).start();
-    }
-
-    private void updateLastPlayed() {
-        if(mCurrentInstance == null) return;
-        if(mCurrentInstance.lastPlayed > 0) {
-            String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
-                    .format(new Date(mCurrentInstance.lastPlayed));
-            mEditorLastPlayed.setText(date);
-        } else {
-            mEditorLastPlayed.setText("Never");
-        }
     }
 
     private void updateScreenshotsInfo() {

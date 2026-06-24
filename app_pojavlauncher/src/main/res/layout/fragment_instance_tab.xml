@@ -215,29 +215,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:background="@drawable/background_line"
-                        android:padding="@dimen/_8sdp"
+                        android:paddingVertical="@dimen/_4sdp"
                         android:textColor="@color/primary_text"
                         android:textSize="@dimen/_13ssp"
                         android:hint="Calculating..." />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:text="Last Played"
-                        android:textColor="@color/muted_text"
-                        android:textSize="@dimen/_11ssp" />
-                    <TextView
-                        android:id="@+id/editor_last_played"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:background="@drawable/background_line"
-                        android:padding="@dimen/_8sdp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="@dimen/_13ssp"
-                        android:hint="Never" />
                 </LinearLayout>
 
                 <!-- Runtime Card -->
