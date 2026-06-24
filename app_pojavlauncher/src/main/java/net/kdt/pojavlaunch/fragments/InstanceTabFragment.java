@@ -679,9 +679,12 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
 
         // Animate underline indicator
         mTabIndicator.post(() -> {
-            float targetX = tab * mTabIndicator.getWidth();
+            View tabRow = (View) mTabMeta.getParent();
+            int tabWidth = tabRow.getWidth() / 4;
+            mTabIndicator.getLayoutParams().width = tabWidth;
+            mTabIndicator.requestLayout();
             mTabIndicator.animate()
-                    .translationX(targetX)
+                    .translationX(tab * tabWidth)
                     .setDuration(200)
                     .start();
         });
