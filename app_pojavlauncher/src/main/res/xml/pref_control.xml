@@ -136,17 +136,20 @@
             android:key="gyroSmoothing"
             android:title="@string/preference_gyro_smoothing_title"
             android:summary="@string/preference_gyro_smoothing_description"
+            android:icon="@drawable/ic_set_gyro"
             android:defaultValue="true"
             app2:layout="@layout/preference_switch_premium" />
         <SwitchPreference
             android:key="gyroInvertX"
             android:title="@string/preference_gyro_invert_x_axis"
             android:summary="@string/preference_gyro_invert_x_axis_description"
+            android:icon="@drawable/ic_set_gesture"
             app2:layout="@layout/preference_switch_premium" />
         <SwitchPreference
             android:key="gyroInvertY"
             android:title="@string/preference_gyro_invert_y_axis"
             android:summary="@string/preference_gyro_invert_y_axis_description"
+            android:icon="@drawable/ic_set_gesture"
             app2:layout="@layout/preference_switch_premium" />
     </PreferenceCategory>
 
