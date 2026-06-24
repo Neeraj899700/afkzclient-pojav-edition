@@ -44,7 +44,7 @@
         android:layout_height="@dimen/_40sdp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_px_trash"
-        android:tint="#E53935"
+        android:tint="@color/accent_red"
         android:scaleType="center"
         android:padding="@dimen/_10sdp" />
 

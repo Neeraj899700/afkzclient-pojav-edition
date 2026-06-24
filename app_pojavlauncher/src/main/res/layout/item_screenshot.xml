@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/panel_bg"
+    android:padding="@dimen/_8sdp"
+    android:layout_marginBottom="@dimen/_4sdp">
+
+    <!-- Thumbnail + info row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Thumbnail -->
+        <FrameLayout
+            android:layout_width="@dimen/_48sdp"
+            android:layout_height="@dimen/_48sdp"
+            android:background="@color/overlay_bg_light"
+            android:layout_marginEnd="@dimen/_8sdp">
+
+            <ImageView
+                android:id="@+id/screenshot_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Screenshot thumbnail" />
+        </FrameLayout>
+
+        <!-- Name + date -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/screenshot_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/_12ssp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/screenshot_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/muted_text"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Action buttons row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="@dimen/_4sdp">
+
+        <Button
+            android:id="@+id/screenshot_btn_view"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_28sdp"
+            android:background="@drawable/overlay_button_bg"
+            android:text="View"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/_9ssp"
+            android:minWidth="0dp"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_4sdp" />
+
+        <Button
+            android:id="@+id/screenshot_btn_share"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_28sdp"
+            android:background="@drawable/overlay_button_bg"
+            android:text="Share"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/_9ssp"
+            android:minWidth="0dp"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_4sdp" />
+
+        <Button
+            android:id="@+id/screenshot_btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_28sdp"
+            android:background="@drawable/overlay_button_bg"
+            android:text="Delete"
+            android:textColor="@color/accent_red"
+            android:textSize="@dimen/_9ssp"
+            android:minWidth="0dp"
+            android:paddingHorizontal="@dimen/_8sdp" />
+    </LinearLayout>
+</LinearLayout>

@@ -10,6 +10,7 @@
             <stroke
                 android:width="@dimen/_2sdp"
                 android:color="@color/minebutton_color"/>
+            <solid android:color="@android:color/transparent"/>
         </shape>
     </item>
 </layer-list>

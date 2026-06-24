@@ -156,7 +156,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_px_trash"
-                android:tint="#E53935"
+                android:tint="@color/accent_red"
                 android:scaleType="fitCenter"
                 android:padding="@dimen/_8sdp" />
 

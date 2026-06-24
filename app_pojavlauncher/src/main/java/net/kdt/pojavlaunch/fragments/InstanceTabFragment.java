@@ -3,6 +3,7 @@ package net.kdt.pojavlaunch.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.core.content.FileProvider;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -66,9 +68,14 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
     public static final String TAG = "InstanceTabFragment";
 
     private TextView mInstanceSelector;
-    private TextView mTabMeta, mTabMods, mTabResourcePacks;
+    private TextView mTabMeta, mTabMods, mTabResourcePacks, mTabScreenshots;
+    private View mTabIndicator;
     private ScrollView mMetaContent;
     private LinearLayout mModsContainer, mResourcePacksContainer;
+    private ScrollView mScreenshotsContainer;
+    private LinearLayout mScreenshotsGrid;
+    private TextView mScreenshotsHeader, mScreenshotsEmpty;
+    private Button mScreenshotsOpenFolder;
     private ListView mModsList, mResourcePacksList;
     private TextView mModsHeader;
     private TextView mResourcePacksHeader;
@@ -117,8 +124,15 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         mTabMeta = view.findViewById(R.id.tab_meta);
         mTabMods = view.findViewById(R.id.tab_mods);
         mTabResourcePacks = view.findViewById(R.id.tab_resourcepacks);
+        mTabScreenshots = view.findViewById(R.id.tab_screenshots);
+        mTabIndicator = view.findViewById(R.id.tab_indicator);
         mMetaContent = view.findViewById(R.id.meta_content);
         mModsContainer = view.findViewById(R.id.mods_container);
+        mScreenshotsContainer = view.findViewById(R.id.screenshots_container);
+        mScreenshotsGrid = view.findViewById(R.id.screenshots_grid);
+        mScreenshotsHeader = view.findViewById(R.id.screenshots_header);
+        mScreenshotsEmpty = view.findViewById(R.id.screenshots_empty);
+        mScreenshotsOpenFolder = view.findViewById(R.id.screenshots_open_folder);
         mModsList = view.findViewById(R.id.mods_list);
         mModsHeader = view.findViewById(R.id.mods_header);
         mModsSearch = view.findViewById(R.id.mods_search);
@@ -163,6 +177,8 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
             showTab(2);
             if(mResourcePacksAdapter != null) mResourcePacksAdapter.filter(mResourcePacksSearch.getText().toString());
         });
+        mTabScreenshots.setOnClickListener(v -> showTab(3));
+        mScreenshotsOpenFolder.setOnClickListener(v -> openScreenshots());
 
         setupVersionSelector();
         setupControlSelector();
@@ -558,19 +574,121 @@ public class InstanceTabFragment extends Fragment implements CropperUtils.Croppe
         return in != null ? in : "";
     }
 
+    private void loadScreenshotsList() {
+        if(mCurrentInstance == null) return;
+        mScreenshotsGrid.removeAllViews();
+        File gameDir = mCurrentInstance.getGameDirectory();
+        File screenshotsDir = new File(gameDir, "screenshots");
+        if(!screenshotsDir.exists()) screenshotsDir.mkdirs();
+
+        File[] shots = screenshotsDir.listFiles((dir, name) ->
+                name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"));
+
+        if(shots == null || shots.length == 0) {
+            mScreenshotsHeader.setText("SCREENSHOTS — 0");
+            mScreenshotsEmpty.setVisibility(View.VISIBLE);
+            mScreenshotsGrid.setVisibility(View.GONE);
+            return;
+        }
+
+        // Sort newest first
+        java.util.Arrays.sort(shots, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+
+        mScreenshotsHeader.setText("SCREENSHOTS — " + shots.length);
+        mScreenshotsEmpty.setVisibility(View.GONE);
+        mScreenshotsGrid.setVisibility(View.VISIBLE);
+
+        SimpleDateFormat dateFmt = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
+
+        for(File shot : shots) {
+            View item = LayoutInflater.from(getContext()).inflate(R.layout.item_screenshot, mScreenshotsGrid, false);
+
+            ImageView thumbnail = item.findViewById(R.id.screenshot_thumbnail);
+            TextView nameText = item.findViewById(R.id.screenshot_name);
+            TextView dateText = item.findViewById(R.id.screenshot_date);
+            Button btnView = item.findViewById(R.id.screenshot_btn_view);
+            Button btnShare = item.findViewById(R.id.screenshot_btn_share);
+            Button btnDelete = item.findViewById(R.id.screenshot_btn_delete);
+
+            nameText.setText(shot.getName());
+            dateText.setText(dateFmt.format(new Date(shot.lastModified())));
+
+            // Load thumbnail
+            try {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inSampleSize = 4;
+                Bitmap thumb = BitmapFactory.decodeFile(shot.getAbsolutePath(), opts);
+                if(thumb != null) thumbnail.setImageBitmap(thumb);
+            } catch(Exception ignored) {}
+
+            btnView.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(shot), "image/*");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try { startActivity(intent); } catch(Exception e) {
+                    Toast.makeText(requireContext(), "No image viewer found", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            btnShare.setOnClickListener(v -> {
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                        requireContext().getPackageName() + ".provider", shot);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try { startActivity(Intent.createChooser(intent, "Share screenshot")); } catch(Exception e) {
+                    Toast.makeText(requireContext(), "No share app found", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            btnDelete.setOnClickListener(v -> {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Delete Screenshot")
+                        .setMessage("Delete " + shot.getName() + "?")
+                        .setPositiveButton("Delete", (d, w) -> {
+                            if(shot.delete()) {
+                                Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                                loadScreenshotsList();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
+
+            mScreenshotsGrid.addView(item);
+        }
+    }
+
     private void showTab(int tab) {
         mMetaContent.setVisibility(tab == 0 ? View.VISIBLE : View.GONE);
         mModsContainer.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
         mResourcePacksContainer.setVisibility(tab == 2 ? View.VISIBLE : View.GONE);
+        mScreenshotsContainer.setVisibility(tab == 3 ? View.VISIBLE : View.GONE);
 
-        int green = 0xFF57CC33;
-        int white = 0xFFFFFFFF;
-        mTabMeta.setTextColor(tab == 0 ? green : white);
-        mTabMods.setTextColor(tab == 1 ? green : white);
-        mTabResourcePacks.setTextColor(tab == 2 ? green : white);
+        int active = getResources().getColor(R.color.minebutton_color);
+        int inactive = getResources().getColor(R.color.tab_text_inactive);
+        mTabMeta.setTextColor(tab == 0 ? active : inactive);
+        mTabMeta.setTextSize(tab == 0 ? 14 : 13);
+        mTabMods.setTextColor(tab == 1 ? active : inactive);
+        mTabMods.setTextSize(tab == 1 ? 14 : 13);
+        mTabResourcePacks.setTextColor(tab == 2 ? active : inactive);
+        mTabResourcePacks.setTextSize(tab == 2 ? 14 : 13);
+        mTabScreenshots.setTextColor(tab == 3 ? active : inactive);
+        mTabScreenshots.setTextSize(tab == 3 ? 14 : 13);
+
+        // Animate underline indicator
+        mTabIndicator.post(() -> {
+            float targetX = tab * mTabIndicator.getWidth();
+            mTabIndicator.animate()
+                    .translationX(targetX)
+                    .setDuration(200)
+                    .start();
+        });
 
         if(tab == 1) loadModsList();
         else if(tab == 2) loadResourcePacksList();
+        else if(tab == 3) loadScreenshotsList();
     }
 
     private void loadModsList() {

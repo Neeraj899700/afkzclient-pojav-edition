@@ -15,4 +15,20 @@
 
     <color name="primary_text">#FFFFFF</color>
     <color name="secondary_text">#B2B2B2</color>
+
+    <color name="muted_text">#888888</color>
+    <color name="input_border_unselected">#909090</color>
+    <color name="overlay_bg_dark">#2C2C2C</color>
+    <color name="overlay_bg_light">#232323</color>
+    <color name="tab_text_inactive">#B2B2B2</color>
+    <color name="panel_stroke">#2A2A2B</color>
+    <color name="card_bg_dark">#1E1E20</color>
+    <color name="menu_bg">#272727</color>
+    <color name="nav_selected_bg">#1A57CC33</color>
+    <color name="logger_header_bg">#555555</color>
+    <color name="mine_button_pressed">#45A829</color>
+    <color name="mine_button_disabled">#2A4A20</color>
+    <color name="stop_button_pressed">#B71C1C</color>
+    <color name="stop_button_disabled">#2A4A20</color>
+    <color name="accent_red">#E53935</color>
 </resources>
